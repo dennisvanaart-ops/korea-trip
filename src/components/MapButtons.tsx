@@ -7,11 +7,13 @@ interface Props {
   className?: string;
 }
 
-export function MapButtons({ name, query, naverUrl, kakaoUrl, className = "" }: Props) {
-  const encodedQuery = encodeURIComponent(query);
+export function MapButtons({ name, address, query, naverUrl, kakaoUrl, className = "" }: Props) {
+  const effectiveQuery =
+    query && query.trim().length > 2 ? query : `${name} ${address ?? ""}`.trim();
+  const encodedQuery = encodeURIComponent(effectiveQuery);
   const naver = naverUrl ?? `https://map.naver.com/v5/search/${encodedQuery}`;
   const kakao = kakaoUrl ?? `https://map.kakao.com/?q=${encodedQuery}`;
-  const navigate = `https://map.naver.com/v5/directions/-/-/-/transit?goal=${encodedQuery}`;
+  const navigate = naver;
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>

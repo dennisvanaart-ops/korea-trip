@@ -136,7 +136,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "8 mei",
     parking:
       "7.700 KRW (±€5,40) per nacht — beperkt, mechanisch systeem. Geen grote auto's, geen elektrische voertuigen.",
-    notes: ["Self check-in", "Mechanisch parkeersysteem — geen grote auto's, geen EV"],
+    notes: ["Self check-in"],
   },
   best_western_jeonju: {
     id: "best_western_jeonju",
@@ -255,10 +255,16 @@ export const tripDays: TripDay[] = [
       {
         id: "transfer_incheon",
         type: "transfer",
-        title: "E-Life Limo — Incheon → Hotel Gracery",
-        description: "Limousinebus vanuit Incheon Airport Terminal 1 naar hotel.",
-        query: "Incheon Airport Limousine Bus",
-        notes: ["Koop ticket bij aankomsthal T1", "Lijn richting Myeongdong / Jung-gu"],
+        title: "E-Life Limo — Privétransfer Incheon → Hotel Gracery",
+        description:
+          "Privétransfer van Incheon International Airport Terminal 1 naar Hotel Gracery Seoul. Chauffeur wacht met naambordje in de aankomsthal.",
+        query: "Incheon Airport private transfer Seoul",
+        notes: [
+          "Vertrek vanuit Terminal 1 aankomsthal",
+          "Chauffeur wacht ±45 minuten na landing",
+          "Vluchttracking actief — chauffeur past wachttijd aan bij vertraging",
+          "Directe rit naar hotel zonder tussenstops",
+        ],
       },
     ],
     notes: ["Late aankomst — check-in na middernacht mogelijk"],
@@ -524,14 +530,16 @@ export const tripDays: TripDay[] = [
         name: "Haeundae Sky Capsule",
         type: "sightseeing",
         query: "Haeundae Sky Capsule Busan",
-        description: "Kleurrijke minitrein langs de Haeundae kustlijn.",
+        description:
+          "Langzame kleurrijke capsule langs de kust met uitzicht over zee. Route van Mipo naar Cheongsapo langs de Haeundae kustlijn.",
         reservation: true,
         timeSlot: "Voorkeur 12:00–14:00",
         notes: [
           "Start bij Mipo Station",
           "Route: Mipo → Cheongsapo",
-          "Daarna taxi of bus terug",
-          "Van tevoren reserveren via officiële website",
+          "Reserveren via officiële website",
+          "Tijdslot voorkeur 12:00–14:00",
+          "Terug via taxi of Beach Train",
         ],
       },
       {
