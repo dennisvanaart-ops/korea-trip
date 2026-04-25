@@ -95,6 +95,8 @@ export interface TripDay {
   location: string;
   emoji: string;
   description?: string;
+  /** Only set on driving days — shown subtly below the route in the day header */
+  travelTime?: string;
   hotel?: Hotel;
   transport?: Transport[];
   activities?: Activity[];
@@ -458,6 +460,7 @@ export const tripDays: TripDay[] = [
     title: "Seoul → Sokcho",
     location: "Seoul → Sokcho",
     emoji: "🚗",
+    travelTime: "± 2,5–3 uur",
     hotel: hotels.sokcho,
     transport: [
       {
@@ -529,6 +532,7 @@ export const tripDays: TripDay[] = [
     title: "Sokcho → Andong",
     location: "Sokcho → Andong",
     emoji: "🏘️",
+    travelTime: "± 4 uur",
     hotel: hotels.jukheon,
     notes: ["Check-in 16:00–23:00 bij Jukheon Traditional House"],
   },
@@ -565,6 +569,7 @@ export const tripDays: TripDay[] = [
     title: "Andong → Busan",
     location: "Andong → Busan",
     emoji: "🌉",
+    travelTime: "± 2,5–3 uur",
     hotel: hotels.gem_stay,
     activities: [
       {
@@ -602,6 +607,7 @@ export const tripDays: TripDay[] = [
     title: "Busan → Jeonju",
     location: "Busan → Jeonju",
     emoji: "🍚",
+    travelTime: "± 3–4 uur",
     hotel: hotels.best_western_jeonju,
   },
   {
@@ -644,6 +650,7 @@ export const tripDays: TripDay[] = [
     title: "Jeonju → Seoul",
     location: "Jeonju → Seoul",
     emoji: "🏙️",
+    travelTime: "± 2–3 uur",
     hotel: hotels.weco_insadong,
   },
   {

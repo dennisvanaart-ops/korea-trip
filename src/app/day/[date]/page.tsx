@@ -49,6 +49,9 @@ export default async function DayPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 leading-tight">{day.title}</h1>
         </div>
         <p className="text-gray-500 mt-1">{day.location}</p>
+        {day.travelTime && (
+          <p className="text-xs text-gray-400 mt-0.5">{day.travelTime} rijden</p>
+        )}
       </div>
 
       <div className="px-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { TripDayWheel } from "./TripDayWheel";
 import { TripTimeline } from "./TripTimeline";
@@ -26,29 +27,47 @@ export function TripNavigation() {
   return (
     <div className="flex flex-col flex-1 min-h-0">
       {/* Header row — always visible */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-          Dagplanning
-        </p>
-        <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-gray-50 text-xs">
-          <button
-            onClick={() => switchView("wheel")}
-            className={[
-              "px-3 py-1.5 font-medium transition-colors",
-              view === "wheel" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
-            ].join(" ")}
+      <div className="flex-shrink-0 space-y-0">
+        <div className="flex items-center justify-between px-4 py-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+            Dagplanning
+          </p>
+          <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-gray-50 text-xs">
+            <button
+              onClick={() => switchView("wheel")}
+              className={[
+                "px-3 py-1.5 font-medium transition-colors",
+                view === "wheel" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
+              ].join(" ")}
+            >
+              Rol
+            </button>
+            <button
+              onClick={() => switchView("list")}
+              className={[
+                "px-3 py-1.5 font-medium transition-colors",
+                view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
+              ].join(" ")}
+            >
+              Lijst
+            </button>
+          </div>
+        </div>
+
+        {/* Info shortcut */}
+        <div className="px-4 pb-2">
+          <Link
+            href="/info"
+            className="flex items-center justify-between w-full rounded-xl border border-gray-200 bg-white px-4 py-3 active:bg-gray-50"
           >
-            Rol
-          </button>
-          <button
-            onClick={() => switchView("list")}
-            className={[
-              "px-3 py-1.5 font-medium transition-colors",
-              view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
-            ].join(" ")}
-          >
-            Lijst
-          </button>
+            <div className="flex items-center gap-2.5">
+              <span className="text-base">🗂️</span>
+              <span className="text-sm font-medium text-gray-700">Reisdocumenten & praktische info</span>
+            </div>
+            <svg className="text-gray-300" width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
       </div>
 
