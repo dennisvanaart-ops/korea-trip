@@ -133,7 +133,7 @@ export const hotels: Record<string, Hotel> = {
     address: "Andong, Gyeongsangbuk-do, Zuid-Korea",
     query: "Jukheon Traditional House Andong",
     checkIn: "5 mei 16:00–23:00",
-    checkOut: "7 mei",
+    checkOut: "6 mei",
     parking: "Beperkt/lokaal parkeren",
     notes: [
       "Traditioneel hanok verblijf",
@@ -147,7 +147,7 @@ export const hotels: Record<string, Hotel> = {
     name: "Gem Stay Seomyeon",
     address: "Seomyeon, Busanjin-gu, Busan",
     query: "Gem Stay Seomyeon Busan",
-    checkIn: "7 mei",
+    checkIn: "6 mei",
     checkOut: "8 mei",
     parking:
       "7.700 KRW (±€5,40) per nacht — beperkt, mechanisch systeem. Geen grote auto's, geen elektrische voertuigen.",
@@ -539,10 +539,11 @@ export const tripDays: TripDay[] = [
   {
     date: "2026-05-06",
     dayNumber: 9,
-    title: "Andong — Hahoe Village",
-    location: "Andong",
-    emoji: "🎭",
-    hotel: hotels.jukheon,
+    title: "Andong → Busan",
+    location: "Andong → Busan",
+    emoji: "🌉",
+    travelTime: "± 2,5–3 uur",
+    hotel: hotels.gem_stay,
     activities: [
       {
         id: "hahoe_village",
@@ -550,7 +551,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Hahoe Folk Village Andong",
         description: "UNESCO Werelderfgoedsite — levend dorpje met traditional hanok-huizen.",
-        notes: ["Masker-dansen in het weekend mogelijk"],
+        notes: ["Masker-dansen in het weekend mogelijk", "Ochtendbezoek voor vertrek naar Busan"],
         imageUrl: ai("hahoe_village"),
       },
       {
@@ -562,14 +563,14 @@ export const tripDays: TripDay[] = [
         imageUrl: ai("hahoe_village"),
       },
     ],
+    notes: ["Ochtend Hahoe, dan vertrek richting Busan"],
   },
   {
     date: "2026-05-07",
     dayNumber: 10,
-    title: "Andong → Busan",
-    location: "Andong → Busan",
-    emoji: "🌉",
-    travelTime: "± 2,5–3 uur",
+    title: "Busan — Haeundae",
+    location: "Busan",
+    emoji: "🏖️",
     hotel: hotels.gem_stay,
     activities: [
       {
@@ -599,7 +600,6 @@ export const tripDays: TripDay[] = [
         imageUrl: ai("haeundae_beach"),
       },
     ],
-    notes: ["Vertrek Andong ~08:00, aankomst Busan ~11:30"],
   },
   {
     date: "2026-05-08",
