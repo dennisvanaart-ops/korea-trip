@@ -10,6 +10,11 @@
 
 export type ItemType = "hotel" | "activity" | "transport";
 
+export type SearchStrategy =
+  | "wikimedia"   // landmarks, nature, transport — Wikimedia only
+  | "web"         // cafés, restaurants, small hotels — web search + og:image only
+  | "both";       // try both (good for hotels, well-known food spots)
+
 export interface TripItem {
   /** Matches the key in image-map.json (without the category prefix) */
   id: string;
@@ -21,6 +26,8 @@ export interface TripItem {
   searchQueries: string[];
   /** Heuristic: true when a non-branded generic shot is acceptable (e.g. airline) */
   genericOk: boolean;
+  /** Controls which search backends are used */
+  searchStrategy: SearchStrategy;
 }
 
 export const ITEMS: TripItem[] = [
@@ -37,6 +44,7 @@ export const ITEMS: TripItem[] = [
       "Myeongdong hotel Seoul street",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "sokcho",
@@ -50,6 +58,7 @@ export const ITEMS: TripItem[] = [
       "Sokcho beachfront hotel Korea",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "jukheon",
@@ -63,6 +72,7 @@ export const ITEMS: TripItem[] = [
       "Andong hanok guesthouse traditional house",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "gem_stay",
@@ -76,6 +86,7 @@ export const ITEMS: TripItem[] = [
       "Busan Seomyeon accommodation",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "best_western_jeonju",
@@ -89,6 +100,7 @@ export const ITEMS: TripItem[] = [
       "전주 호텔",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "weco_insadong",
@@ -102,6 +114,7 @@ export const ITEMS: TripItem[] = [
       "인사동 호텔 서울",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
 
   // ── Activities ───────────────────────────────────────────────────────────────
@@ -117,6 +130,7 @@ export const ITEMS: TripItem[] = [
       "Anguk bakery cafe Seoul",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "gyeongbokgung_palace",
@@ -130,6 +144,7 @@ export const ITEMS: TripItem[] = [
       "Gyeongbokgung main gate Gwanghwamun",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "bukchon_hanok",
@@ -143,6 +158,7 @@ export const ITEMS: TripItem[] = [
       "Bukchon alley traditional houses",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "gwangjang_market",
@@ -156,6 +172,7 @@ export const ITEMS: TripItem[] = [
       "Gwangjang traditional market stalls",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "mangwon_market",
@@ -169,6 +186,7 @@ export const ITEMS: TripItem[] = [
       "Mangwon local market Korea",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "cheonggyecheon",
@@ -182,6 +200,7 @@ export const ITEMS: TripItem[] = [
       "Cheonggyecheon waterway night",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "ikseon_dong",
@@ -195,6 +214,7 @@ export const ITEMS: TripItem[] = [
       "Ikseon dong traditional alley cafe",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "insadong_street",
@@ -208,6 +228,7 @@ export const ITEMS: TripItem[] = [
       "Insadong art shops traditional",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "solsot_restaurant",
@@ -221,6 +242,7 @@ export const ITEMS: TripItem[] = [
       "Korean traditional restaurant interior Seoul",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "center_coffee",
@@ -234,6 +256,7 @@ export const ITEMS: TripItem[] = [
       "Seoul specialty coffee shop minimalist",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "lowkey_coffee",
@@ -247,6 +270,7 @@ export const ITEMS: TripItem[] = [
       "Seoul third-wave coffee roastery interior",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "coffee_libre",
@@ -260,6 +284,7 @@ export const ITEMS: TripItem[] = [
       "Seoul specialty roastery cafe",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "better_roasting_lab",
@@ -273,6 +298,7 @@ export const ITEMS: TripItem[] = [
       "Seoul coffee roasting lab",
     ],
     genericOk: false,
+    searchStrategy: "web",
   },
   {
     id: "seoraksan_park",
@@ -286,6 +312,7 @@ export const ITEMS: TripItem[] = [
       "Seoraksan mountain peak autumn",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "seoraksan_cable_car",
@@ -299,6 +326,7 @@ export const ITEMS: TripItem[] = [
       "Seoraksan gondola mountain view",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "hahoe_village",
@@ -312,6 +340,7 @@ export const ITEMS: TripItem[] = [
       "Andong UNESCO folk village",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "sky_capsule_busan",
@@ -325,6 +354,7 @@ export const ITEMS: TripItem[] = [
       "Haeundae sky capsule pink train coastal",
     ],
     genericOk: false,
+    searchStrategy: "both",
   },
   {
     id: "haeundae_beach",
@@ -338,6 +368,7 @@ export const ITEMS: TripItem[] = [
       "Haeundae beach skyline",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "jeonju_hanok",
@@ -351,6 +382,7 @@ export const ITEMS: TripItem[] = [
       "Jeonju traditional village rooftops",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "gyeonggijeon_shrine",
@@ -364,6 +396,7 @@ export const ITEMS: TripItem[] = [
       "Jeonju royal portrait shrine",
     ],
     genericOk: false,
+    searchStrategy: "wikimedia",
   },
   {
     id: "jeonju_bibimbap",
@@ -376,7 +409,8 @@ export const ITEMS: TripItem[] = [
       "전주비빔밥",
       "bibimbap stone bowl Korean food Jeonju",
     ],
-    genericOk: true, // food dish — a good generic shot is acceptable
+    genericOk: true,
+    searchStrategy: "wikimedia", // food dish — a good generic shot is acceptable
   },
 
   // ── Transport ────────────────────────────────────────────────────────────────
@@ -391,7 +425,8 @@ export const ITEMS: TripItem[] = [
       "China Southern aircraft livery CZ",
       "南方航空 飞机",
     ],
-    genericOk: true, // any CZ-liveried plane is fine
+    genericOk: true,
+    searchStrategy: "wikimedia", // any CZ-liveried plane is fine
   },
   {
     id: "airport_transfer",
@@ -405,6 +440,7 @@ export const ITEMS: TripItem[] = [
       "Incheon airport departure hall",
     ],
     genericOk: true,
+    searchStrategy: "wikimedia",
   },
   {
     id: "kia_k3",
@@ -418,6 +454,7 @@ export const ITEMS: TripItem[] = [
       "Kia Cerato K3 Korea",
     ],
     genericOk: true,
+    searchStrategy: "wikimedia",
   },
 ];
 

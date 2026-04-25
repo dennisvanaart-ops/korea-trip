@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
-    "image:scan": "tsx scripts/image-agent/run.ts"
+    "image:scan": "tsx --tsconfig scripts/tsconfig.json scripts/image-agent/run.ts"
   },
   "dependencies": {
     "next": "^15.5.15",

@@ -5,10 +5,16 @@
  * Usage:  npm run image:scan
  *
  * For every trip item in config.ts it:
- *   1. Runs up to 3 Wikimedia Commons search queries
+ *   1. Runs search queries using the item's searchStrategy:
+ *      - "wikimedia": Wikimedia Commons only (landmarks, transport)
+ *      - "web":       DuckDuckGo + og:image (cafés, restaurants, small hotels)
+ *      - "both":      Both sources combined
  *   2. Validates + scores each candidate
- *   3. Keeps the top-3 (high + medium only)
+ *   3. Keeps the top-3 (high + medium only; low is logged but excluded)
  *   4. Writes the full manifest to output/image-candidates.json
+ *
+ * Optional env vars:
+ *   NAVER_CLIENT_ID + NAVER_CLIENT_SECRET  → enables Naver Image API (Korean venues)
  *
  * NEVER downloads images automatically.
  */
@@ -30,19 +36,24 @@ const MAX_SHORTLIST = 3;
 
 // ── Colour helpers ────────────────────────────────────────────────────────────
 const C = {
-  reset: "\x1b[0m",
-  bold: "\x1b[1m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  red: "\x1b[31m",
-  dim: "\x1b[2m",
-  cyan: "\x1b[36m",
+  reset: "\x1b[0m",   bold: "\x1b[1m",  dim: "\x1b[2m",
+  green: "\x1b[32m",  yellow: "\x1b[33m", red: "\x1b[31m", cyan: "\x1b[36m",
+  blue: "\x1b[34m",   magenta: "\x1b[35m",
 };
 
-function badge(confidence: "high" | "medium" | "low"): string {
-  if (confidence === "high") return `${C.green}[HIGH]${C.reset}`;
-  if (confidence === "medium") return `${C.yellow}[MED]${C.reset}`;
-  return `${C.red}[LOW]${C.reset}`;
+function badge(confidence: "high" | "medium" | "low") {
+  if (confidence === "high")   return `${C.green}[HIGH]${C.reset}`;
+  if (confidence === "medium") return `${C.yellow}[MED] ${C.reset}`;
+  return `${C.red}[LOW] ${C.reset}`;
+}
+
+function srcBadge(s: string) {
+  if (s === "wikimedia") return `${C.blue}[wiki]${C.reset}`;
+  if (s === "official")  return `${C.green}[official]${C.reset}`;
+  if (s === "naver")     return `${C.cyan}[naver]${C.reset}`;
+  if (s === "instagram") return `${C.magenta}[ig]${C.reset}`;
+  if (s === "booking")   return `${C.cyan}[booking]${C.reset}`;
+  return `${C.dim}[${s}]${C.reset}`;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -50,14 +61,16 @@ function badge(confidence: "high" | "medium" | "low"): string {
 async function run(): Promise<void> {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
+  const naverEnabled = !!process.env.NAVER_CLIENT_ID;
+
   console.log(`\n${C.bold}${C.cyan}Korea Trip — Image Curation Agent${C.reset}`);
-  console.log(`${C.dim}Searching Wikimedia Commons for ${ITEMS.length} items…${C.reset}\n`);
+  console.log(`${C.dim}Sources: Wikimedia Commons + DuckDuckGo/og:image${
+    naverEnabled ? " + Naver API" : " (set NAVER_CLIENT_ID for Naver API)"
+  }${C.reset}`);
+  console.log(`${C.dim}Scanning ${ITEMS.length} items…${C.reset}\n`);
 
   const results: ImageItemResult[] = [];
-
-  let statsHigh = 0;
-  let statsMedium = 0;
-  let statsNone = 0;
+  let statsHigh = 0, statsMedium = 0, statsNone = 0;
 
   for (let i = 0; i < ITEMS.length; i++) {
     const item = ITEMS[i];
@@ -65,31 +78,29 @@ async function run(): Promise<void> {
 
     process.stdout.write(
       `${C.bold}[${String(i + 1).padStart(2, "0")}/${ITEMS.length}]${C.reset} ` +
-      `${item.name} ${C.dim}(${item.type}, ${item.city})${C.reset} … `
+      `${item.name} ${C.dim}(${item.type}, ${item.city}, strategy:${item.searchStrategy})${C.reset} … `
     );
 
-    // 1. Search
-    const raw = await searchAllQueries(item.searchQueries);
+    // 1. Search using item strategy
+    const raw = await searchAllQueries(item.searchQueries, item.searchStrategy);
 
     // 2. Validate all
-    const validated: ValidatedCandidate[] = raw.map((c) =>
-      validateCandidate(c, item)
-    );
+    const validated: ValidatedCandidate[] = raw.map((c) => validateCandidate(c, item));
 
     // 3. Rank + split
     const { shortlist, rejected } = rankCandidates(validated);
 
-    // 4. Take top-3 from shortlist
+    // 4. Take top-3
     const top = shortlist.slice(0, MAX_SHORTLIST);
 
-    // 5. Determine recommendedIndex
+    // 5. recommendedIndex: first high candidate
     const firstHigh = top.findIndex((c) => c.confidence === "high");
     const recommendedIndex = firstHigh >= 0 ? firstHigh : null;
     const needsHumanReview = recommendedIndex === null;
 
-    // 6. Print summary line
+    // 6. Print summary
     const highCount = top.filter((c) => c.confidence === "high").length;
-    const medCount = top.filter((c) => c.confidence === "medium").length;
+    const medCount  = top.filter((c) => c.confidence === "medium").length;
 
     if (top.length === 0) {
       process.stdout.write(`${C.red}✗ no candidates${C.reset}\n`);
@@ -99,26 +110,23 @@ async function run(): Promise<void> {
         `${C.green}✓${C.reset} ${top.length} candidates ` +
         `(${highCount} high, ${medCount} medium)\n`
       );
-      if (highCount > 0) statsHigh++;
-      else statsMedium++;
+      if (highCount > 0) statsHigh++; else statsMedium++;
     }
 
-    // 7. Print per-candidate detail
+    // 7. Per-candidate detail
     for (const [j, c] of top.entries()) {
       const star = j === recommendedIndex ? " ★" : "  ";
-      console.log(
-        `   ${star}${badge(c.confidence)} ${C.dim}${c.title ?? c.url.split("/").pop() ?? c.url}${C.reset}`
-      );
+      const title = c.title ?? c.url.split("/").pop() ?? c.url;
+      console.log(`   ${star}${badge(c.confidence)} ${srcBadge(c.sourceType)} ${C.dim}${title.slice(0, 72)}${C.reset}`);
       console.log(`       ${C.dim}${c.reason}${C.reset}`);
+      if (c.sourceType !== "wikimedia") {
+        console.log(`       ${C.yellow}⚠ ${c.licenseOrUsageNote}${C.reset}`);
+      }
     }
 
-    // 8. Log rejected (debug)
+    // 8. Rejected (debug only)
     if (rejected.length > 0) {
-      console.log(
-        `   ${C.dim}↳ rejected ${rejected.length}: ` +
-        rejected.map((c) => c.title ?? "untitled").join(", ") +
-        `${C.reset}`
-      );
+      console.log(`   ${C.dim}↳ rejected ${rejected.length}: ${rejected.map((c) => c.title?.slice(0, 40) ?? "?").join(", ")}${C.reset}`);
     }
 
     results.push({
@@ -137,16 +145,14 @@ async function run(): Promise<void> {
 
   // ── Summary ─────────────────────────────────────────────────────────────────
   console.log(`\n${C.bold}Summary${C.reset}`);
-  console.log(`  ${C.green}High-confidence pick found:${C.reset}  ${statsHigh}`);
-  console.log(`  ${C.yellow}Medium only (review needed):${C.reset} ${statsMedium}`);
-  console.log(`  ${C.red}No candidates found:${C.reset}         ${statsNone}`);
-  console.log(`\n  Manifest written to: ${C.cyan}${OUTPUT_FILE}${C.reset}\n`);
-  console.log(
-    `${C.dim}Next step: review the JSON, then copy chosen URLs to public/images/ manually.${C.reset}\n`
-  );
+  console.log(`  ${C.green}High-confidence pick:${C.reset}       ${statsHigh}`);
+  console.log(`  ${C.yellow}Medium only (needs review):${C.reset} ${statsMedium}`);
+  console.log(`  ${C.red}No candidates found:${C.reset}        ${statsNone}`);
+  console.log(`\n  Manifest → ${C.cyan}${OUTPUT_FILE}${C.reset}`);
+  console.log(`${C.dim}  Non-Wikimedia images need usage-rights verification before deployment.${C.reset}\n`);
 }
 
 run().catch((err) => {
-  console.error(`\n${C.red}Fatal error:${C.reset}`, err);
+  console.error(`\n${C.red}Fatal:${C.reset}`, err);
   process.exit(1);
 });

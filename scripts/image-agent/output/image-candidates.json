@@ -1,0 +1,740 @@
+[
+  {
+    "id": "gracery_seoul",
+    "name": "Hotel Gracery Seoul",
+    "type": "hotel",
+    "preferredFilename": "hotel_gracery_seoul.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Namdaemun-ro_and_Aloft_Seoul_Myeongdong_by_night.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Namdaemun-ro and Aloft Seoul Myeongdong by night",
+        "confidence": "high",
+        "reason": "2/3 location hints matched; quality indicator present; 5680×3777px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Namdaemun-ro%2C_Seoul_at_night.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Namdaemun-ro, Seoul at night",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 4000×6016px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Namdaemun-ro%2C_Seoul_02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Namdaemun-ro, Seoul 02",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 4000×6016px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "sokcho",
+    "name": "More Than Hotel Sokcho",
+    "type": "hotel",
+    "preferredFilename": "hotel_sokcho.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "jukheon",
+    "name": "Jukheon Traditional House",
+    "type": "hotel",
+    "preferredFilename": "hotel_jukheon.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "gem_stay",
+    "name": "Gem Stay Seomyeon",
+    "type": "hotel",
+    "preferredFilename": "hotel_gem_stay.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/%EC%84%9C%EB%A9%B4_%E8%A5%BF%E9%9D%A2_Seomyeon%2C_Busan_%285452865868%29.jpg",
+        "source": "Wikimedia Commons",
+        "title": "서면 西面 Seomyeon, Busan (5452865868)",
+        "confidence": "high",
+        "reason": "2/3 location hints matched; quality indicator present; 1000×750px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "best_western_jeonju",
+    "name": "Best Western Plus Jeonju",
+    "type": "hotel",
+    "preferredFilename": "hotel_best_western_jeonju.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "weco_insadong",
+    "name": "WECO Stay Insadong",
+    "type": "hotel",
+    "preferredFilename": "hotel_weco_insadong.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "onion_anguk",
+    "name": "Onion Anguk",
+    "type": "activity",
+    "preferredFilename": "activity_onion_anguk.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "gyeongbokgung_palace",
+    "name": "Gyeongbokgung Palace",
+    "type": "activity",
+    "preferredFilename": "activity_gyeongbokgung_palace.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Gyeonghoeru_%28Royal_Banquet_Hall%29_at_Gyeongbokgung_Palace%2C_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gyeonghoeru (Royal Banquet Hall) at Gyeongbokgung Palace, Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6425×4283px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Front_view_of_Jibokjae_Hall_under_blue_sky_at_Gyeongbokgung_Palace_in_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Front view of Jibokjae Hall under blue sky at Gyeongbokgung Palace in Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6476×2590px; wide/landmark view",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Finely_painted_wooden_ceiling_of_Jibokjae_Hall_seen_from_below_at_Gyeongbokgung_Palace_in_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Finely painted wooden ceiling of Jibokjae Hall seen from below at Gyeongbokgung Palace in Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 5980×3781px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "bukchon_hanok",
+    "name": "Bukchon Hanok Village",
+    "type": "activity",
+    "preferredFilename": "activity_bukchon_hanok.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Bukchon-ro_11-gil_street_with_hanok_houses_at_blue_hour_in_Bukchon_Hanok_Village_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Bukchon-ro 11-gil street with hanok houses at blue hour in Bukchon Hanok Village Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6404×4269px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Traditional_hanok_house_with_wooden_doors_along_a_steeply_sloping_street_in_Bukchon_Hanok_Village_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Traditional hanok house with wooden doors along a steeply sloping street in Bukchon Hanok Village Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 5015×3761px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Gyedong-gil_street_with_climbing_plants_at_golden_hour_in_Seoul_South_Korea.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gyedong-gil street with climbing plants at golden hour in Seoul South Korea",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 6631×3949px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "gwangjang_market",
+    "name": "Gwangjang Market",
+    "type": "activity",
+    "preferredFilename": "activity_gwangjang_market.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/81/Gwangjang_Market%2C_Seoul_02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gwangjang Market, Seoul 02",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 3939×2203px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Gwangjang_Market%2C_Seoul_01.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gwangjang Market, Seoul 01",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 5184×3456px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Korea-Seoul-Gwangjang_Market-01.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Korea-Seoul-Gwangjang Market-01",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 2272×1704px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "mangwon_market",
+    "name": "Mangwon Market",
+    "type": "activity",
+    "preferredFilename": "activity_mangwon_market.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Mercado_Mangwon_en_Se%C3%BAl.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Mercado Mangwon en Seúl",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 4000×1800px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "cheonggyecheon",
+    "name": "Cheonggyecheon Stream",
+    "type": "activity",
+    "preferredFilename": "activity_cheonggyecheon.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Cheonggyecheon_stream_at_sunrise_with_trees_in_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Cheonggyecheon stream at sunrise with trees in Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6555×4370px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Cheonggyecheon_stream_with_flowers_and_bridge_at_sunrise_near_Cheonggye_Plaza_in_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Cheonggyecheon stream with flowers and bridge at sunrise near Cheonggye Plaza in Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6653×4435px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Cheonggyecheon_tree-lined_stream_and_footbridge_at_sunrise_in_Seoul.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Cheonggyecheon tree-lined stream and footbridge at sunrise in Seoul",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 6618×4412px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "ikseon_dong",
+    "name": "Ikseon-dong Alley",
+    "type": "activity",
+    "preferredFilename": "activity_ikseon_dong.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Ikseon-dong_%EC%9D%B5%EC%84%A0%EB%8F%99_October_1_2020_5.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Ikseon-dong 익선동 October 1 2020 5",
+        "confidence": "high",
+        "reason": "2/3 location hints matched; quality indicator present; 5729×3819px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Ikseon-dong_%EC%9D%B5%EC%84%A0%EB%8F%99_October_1_2020_10.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Ikseon-dong 익선동 October 1 2020 10",
+        "confidence": "high",
+        "reason": "2/3 location hints matched; quality indicator present; 5803×3869px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Ikseon-dong_%EC%9D%B5%EC%84%A0%EB%8F%99_October_1_2020_3.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Ikseon-dong 익선동 October 1 2020 3",
+        "confidence": "high",
+        "reason": "2/3 location hints matched; quality indicator present; 6000×4000px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "insadong_street",
+    "name": "Insadong",
+    "type": "activity",
+    "preferredFilename": "activity_insadong_street.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Seoul-Insadong-Street-01.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Seoul-Insadong-Street-01",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 1280×960px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Seoul-Insadong-Street-02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Seoul-Insadong-Street-02",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 1280×960px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Seoul-Insadong-Street-03.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Seoul-Insadong-Street-03",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 1280×960px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "solsot_restaurant",
+    "name": "Solsot Restaurant",
+    "type": "activity",
+    "preferredFilename": "activity_solsot_restaurant.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "center_coffee",
+    "name": "Center Coffee",
+    "type": "activity",
+    "preferredFilename": "activity_center_coffee.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "lowkey_coffee",
+    "name": "Lowkey Coffee",
+    "type": "activity",
+    "preferredFilename": "activity_lowkey_coffee.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "coffee_libre",
+    "name": "Coffee Libre",
+    "type": "activity",
+    "preferredFilename": "activity_coffee_libre.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "better_roasting_lab",
+    "name": "Better Roasting Lab",
+    "type": "activity",
+    "preferredFilename": "activity_better_roasting_lab.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "seoraksan_park",
+    "name": "Seoraksan National Park",
+    "type": "activity",
+    "preferredFilename": "activity_seoraksan_park.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Footbridge_at_Seoraksan_National_Park.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Footbridge at Seoraksan National Park",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 3728×2180px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Sculpture_of_a_bear_at_Seoraksan_National_Park.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Sculpture of a bear at Seoraksan National Park",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 2939×3864px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Signs_at_Seoraksan_National_Park_02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Signs at Seoraksan National Park 02",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 4656×3104px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "seoraksan_cable_car",
+    "name": "Seoraksan Cable Car",
+    "type": "activity",
+    "preferredFilename": "activity_seoraksan_cable_car.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "hahoe_village",
+    "name": "Hahoe Folk Village",
+    "type": "activity",
+    "preferredFilename": "activity_hahoe_village.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Hahoe_Folk_Village_03.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Hahoe Folk Village 03",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 4773×3182px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Hahoe_Folk_Village_04.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Hahoe Folk Village 04",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 5023×3329px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Hahoe_Folk_Village_06.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Hahoe Folk Village 06",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 4923×3207px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "sky_capsule_busan",
+    "name": "Sky Capsule Haeundae",
+    "type": "activity",
+    "preferredFilename": "activity_sky_capsule_busan.jpg",
+    "candidates": [],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "haeundae_beach",
+    "name": "Haeundae Beach",
+    "type": "activity",
+    "preferredFilename": "activity_haeundae_beach.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Haeundae_Beach_in_Busan.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Haeundae Beach in Busan",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 4640×2683px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Busan_City_Haeundae_Beach.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Busan City Haeundae Beach",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 1180×680px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Busan_City_Haeundae_Beach_KOGL_%2801%29.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Busan City Haeundae Beach KOGL (01)",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 5464×2572px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "jeonju_hanok",
+    "name": "Jeonju Hanok Village",
+    "type": "activity",
+    "preferredFilename": "activity_jeonju_hanok.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Jeonju_Hanok_Village_South_Korea_02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Jeonju Hanok Village South Korea 02",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 2560×1430px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Jeonju_Hanok_Village_South_Korea_01.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Jeonju Hanok Village South Korea 01",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 2560×1438px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Jeonju_Hanok_Village_South_Korea_03.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Jeonju Hanok Village South Korea 03",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 2560×1429px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "gyeonggijeon_shrine",
+    "name": "Gyeonggijeon Shrine",
+    "type": "activity",
+    "preferredFilename": "activity_gyeonggijeon_shrine.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Gyeonggijeon_Shrine_04.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gyeonggijeon Shrine 04",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 4799×3181px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Gyeonggijeon_Shrine_05.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gyeonggijeon Shrine 05",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 3248×2165px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Gyeonggijeon_Shrine_01.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Gyeonggijeon Shrine 01",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 3096×2064px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "jeonju_bibimbap",
+    "name": "Jeonju Bibimbap",
+    "type": "activity",
+    "preferredFilename": "activity_jeonju_bibimbap.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Korean_cuisine-Jeonju_bibimbap-02.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Korean cuisine-Jeonju bibimbap-02",
+        "confidence": "high",
+        "reason": "4/4 location hints matched; quality indicator present; 2048×1536px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Korean_cuisine-Bibimbap-08.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Korean cuisine-Bibimbap-08",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 1280×960px",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Bibimbap_4.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Bibimbap 4",
+        "confidence": "high",
+        "reason": "3/4 location hints matched; quality indicator present; 3936×2624px",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "china_southern",
+    "name": "China Southern Airlines",
+    "type": "transport",
+    "preferredFilename": "transport_china_southern.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/China_Southern_Airlines_Boeing_787-800_at_Wuhan_Tianhe_International_Airport.jpg",
+        "source": "Wikimedia Commons",
+        "title": "China Southern Airlines Boeing 787-800 at Wuhan Tianhe International Airport",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 2553×1913px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/44/China_Southern_Airlines%2C_Boeing_787-8_Dreamliner%2C_B-2735.jpg",
+        "source": "Wikimedia Commons",
+        "title": "China Southern Airlines, Boeing 787-8 Dreamliner, B-2735",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 2000×1427px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/58/B-1128_-_China_Southern_Airlines_-_Boeing_787-9_Dreamliner_-_63982_-_VGHS.jpg",
+        "source": "Wikimedia Commons",
+        "title": "B-1128 - China Southern Airlines - Boeing 787-9 Dreamliner - 63982 - VGHS",
+        "confidence": "medium",
+        "reason": "1/3 location hints matched; quality indicator present; 1740×980px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": null,
+    "needsHumanReview": true
+  },
+  {
+    "id": "airport_transfer",
+    "name": "Incheon International Airport",
+    "type": "transport",
+    "preferredFilename": "transport_airport_transfer.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Incheon_International_Airport_Interior.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Incheon International Airport Interior",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 1600×1067px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Incheon_International_Airport_Terminal_1_Departure.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Incheon International Airport Terminal 1 Departure",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 6442×4295px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Few_people_in_arrival_hall_at_Incheon_International_Airport_Terminal_1_during_the_coronavirus_outbreak_20200306_114257.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Few people in arrival hall at Incheon International Airport Terminal 1 during the coronavirus outbreak 20200306 114257",
+        "confidence": "high",
+        "reason": "2/4 location hints matched; quality indicator present; 5312×2988px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  },
+  {
+    "id": "kia_k3",
+    "name": "Kia K3",
+    "type": "transport",
+    "preferredFilename": "transport_kia_k3.jpg",
+    "candidates": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Kia_K3_BD_PE_Snow_White_Pearl.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Kia K3 BD PE Snow White Pearl",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 3972×2979px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/81/0_Kia_K3_%28YD%29_2.jpg",
+        "source": "Wikimedia Commons",
+        "title": "0 Kia K3 (YD) 2",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 2718×1645px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Kia_K3_EV_001.jpg",
+        "source": "Wikimedia Commons",
+        "title": "Kia K3 EV 001",
+        "confidence": "high",
+        "reason": "3/3 location hints matched; quality indicator present; 1048×786px; generic transport ok",
+        "isGeneric": false,
+        "matchesLocation": true
+      }
+    ],
+    "recommendedIndex": 0,
+    "needsHumanReview": false
+  }
+]
