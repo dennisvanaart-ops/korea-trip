@@ -27,6 +27,7 @@ export interface Activity {
   timeSlot?: string;
   naverUrl?: string;
   kakaoUrl?: string;
+  imageUrl?: string;
 }
 
 export interface Hotel {
@@ -40,6 +41,7 @@ export interface Hotel {
   notes?: string[];
   naverUrl?: string;
   kakaoUrl?: string;
+  imageUrl?: string;
 }
 
 export interface Airport {
@@ -76,6 +78,7 @@ export interface Transport {
   notes?: string[];
   address?: string;
   query?: string;
+  imageUrl?: string;
 }
 
 export interface TripDay {
@@ -103,6 +106,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "2 mei",
     parking: "Ongeveer 20.000 KRW (±€14) per dag — auto nog niet nodig bij aankomst.",
     notes: ["Centraal gelegen in Jung-gu", "Vlakbij Myeongdong"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Seoul_from_N_Seoul_Tower.jpg/1280px-Seoul_from_N_Seoul_Tower.jpg",
   },
   sokcho: {
     id: "sokcho",
@@ -112,6 +116,7 @@ export const hotels: Record<string, Hotel> = {
     checkIn: "2 mei",
     checkOut: "5 mei",
     notes: ["Aan het strand van Sokcho"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Sokcho_Beach.jpg/1280px-Sokcho_Beach.jpg",
   },
   jukheon: {
     id: "jukheon",
@@ -126,6 +131,7 @@ export const hotels: Record<string, Hotel> = {
       "Check-in tussen 16:00 en 23:00",
       "Unieke ervaring in historisch pand",
     ],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Hahoe_Folk_Village%2C_South_Korea.jpg/1280px-Hahoe_Folk_Village%2C_South_Korea.jpg",
   },
   gem_stay: {
     id: "gem_stay",
@@ -137,6 +143,7 @@ export const hotels: Record<string, Hotel> = {
     parking:
       "7.700 KRW (±€5,40) per nacht — beperkt, mechanisch systeem. Geen grote auto's, geen elektrische voertuigen.",
     notes: ["Self check-in"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Busan_Gwangalli_Beach.jpg/1280px-Busan_Gwangalli_Beach.jpg",
   },
   best_western_jeonju: {
     id: "best_western_jeonju",
@@ -147,6 +154,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "10 mei",
     parking: "Ondergronds parkeren, buiten bij drukte",
     notes: ["Ontbijt inbegrepen", "Café, fitness, wasserette", "Rooftop garden", "Fietsverhuur"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Jeonju_Hanok_Village.jpg/1280px-Jeonju_Hanok_Village.jpg",
   },
   weco_insadong: {
     id: "weco_insadong",
@@ -157,6 +165,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "12 mei",
     parking: "Beperkt parkeren in de buurt",
     notes: ["In het hart van Insadong"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Insadong_Seoul.jpg/1280px-Insadong_Seoul.jpg",
   },
 };
 
@@ -232,6 +241,7 @@ export const tripDays: TripDay[] = [
         type: "flight",
         title: "CZ0346 Amsterdam → Beijing",
         flight: flights.CZ0346,
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg/1280px-China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg",
       },
     ],
     notes: ["Vertrek 21:40 — vroeg naar Schiphol", "Terminal D Schiphol"],
@@ -251,6 +261,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0315 Beijing → Seoul",
         flight: flights.CZ0315,
         notes: ["5u30 overstap Beijing Daxing", "Aankomst Incheon Terminal 1"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg/1280px-China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg",
       },
       {
         id: "transfer_incheon",
@@ -265,6 +276,7 @@ export const tripDays: TripDay[] = [
           "Vluchttracking actief — chauffeur past wachttijd aan bij vertraging",
           "Directe rit naar hotel zonder tussenstops",
         ],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Incheon_International_Airport_Terminal_2.jpg/1280px-Incheon_International_Airport_Terminal_2.jpg",
       },
     ],
     notes: ["Late aankomst — check-in na middernacht mogelijk"],
@@ -291,6 +303,7 @@ export const tripDays: TripDay[] = [
         query: "Gyeongbokgung Palace Seoul",
         description: "Het grootste koninklijke paleis van Korea uit de Joseon-dynastie.",
         notes: ["Hanbok verhuur mogelijk aan de ingang", "Gesloten op dinsdag"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Gyeongbokgung_2015.jpg/1280px-Gyeongbokgung_2015.jpg",
       },
       {
         id: "bukchon",
@@ -299,6 +312,7 @@ export const tripDays: TripDay[] = [
         query: "Bukchon Hanok Village Seoul",
         description: "Historische wijk met traditionele hanok-huizen.",
         notes: ["Rustig in de vroege ochtend"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Seoul_Bukchon_Hanok_Village.jpg/1280px-Seoul_Bukchon_Hanok_Village.jpg",
       },
       {
         id: "gwangjang_market",
@@ -307,6 +321,7 @@ export const tripDays: TripDay[] = [
         query: "Gwangjang Market Seoul",
         description: "Beroemde markt voor bindaetteok, mayak gimbap en meer.",
         notes: ["Alternatief: Mangwon Market"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Gwangjang_Market_Seoul.jpg/1280px-Gwangjang_Market_Seoul.jpg",
       },
       {
         id: "cheonggyecheon",
@@ -367,6 +382,7 @@ export const tripDays: TripDay[] = [
         query: "Namsan Park Seoul",
         description: "Wandeling door Namsan Park met uitzicht op de stad.",
         notes: ["Kabelbaan mogelijk"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/N_Seoul_Tower_2.jpg/1280px-N_Seoul_Tower_2.jpg",
       },
       {
         id: "solsot",
@@ -432,6 +448,7 @@ export const tripDays: TripDay[] = [
         address: "Seoul Yongsan",
         query: "Seoul Yongsan Car Rental",
         notes: ["Ophalen 09:30", "Kia K3 of vergelijkbaar"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/2019_Kia_Forte_GT_%28US%29%2C_front_8.1.19.jpg/1280px-2019_Kia_Forte_GT_%28US%29%2C_front_8.1.19.jpg",
       },
     ],
     notes: [
@@ -454,6 +471,7 @@ export const tripDays: TripDay[] = [
         query: "Seoraksan National Park",
         description: "Wandeling in een van Koreas mooiste bergparken.",
         notes: ["Vroeg vertrekken om drukte te vermijden"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Seoraksan_Ulsan_bawi.jpg/1280px-Seoraksan_Ulsan_bawi.jpg",
       },
       {
         id: "seoraksan_cable",
@@ -462,6 +480,7 @@ export const tripDays: TripDay[] = [
         query: "Seoraksan Cable Car",
         description: "Kabelbaan naar de toppen van Seoraksan.",
         notes: ["Optioneel bij goed weer", "Wachtrij mogelijk in het weekend"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Seoraksan_Ulsan_bawi.jpg/1280px-Seoraksan_Ulsan_bawi.jpg",
       },
     ],
   },
@@ -507,6 +526,7 @@ export const tripDays: TripDay[] = [
         query: "Hahoe Folk Village Andong",
         description: "UNESCO Werelderfgoedsite — levend dorpje met traditional hanok-huizen.",
         notes: ["Masker-dansen in het weekend mogelijk"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Hahoe_Folk_Village%2C_South_Korea.jpg/1280px-Hahoe_Folk_Village%2C_South_Korea.jpg",
       },
       {
         id: "hahoe_viewpoint",
@@ -541,6 +561,7 @@ export const tripDays: TripDay[] = [
           "Tijdslot voorkeur 12:00–14:00",
           "Terug via taxi of Beach Train",
         ],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Haeundae_Beach_Busan.jpg/1280px-Haeundae_Beach_Busan.jpg",
       },
       {
         id: "haeundae_beach",
@@ -548,6 +569,7 @@ export const tripDays: TripDay[] = [
         type: "outdoor",
         query: "Haeundae Beach Busan",
         description: "Het bekendste strand van Korea.",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Haeundae_Beach_Busan.jpg/1280px-Haeundae_Beach_Busan.jpg",
       },
     ],
     notes: ["Vertrek Andong ~08:00, aankomst Busan ~11:30"],
@@ -574,6 +596,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Jeonju Hanok Village",
         description: "700+ traditionele hanok-huizen, cafés en ateliers.",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Jeonju_Hanok_Village.jpg/1280px-Jeonju_Hanok_Village.jpg",
       },
       {
         id: "gyeonggijeon",
@@ -581,6 +604,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Gyeonggijeon Shrine Jeonju",
         description: "Koninklijk portret-heiligdom met bamboepad.",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Gyeonggijeon_Shrine_Jeonju.jpg/1280px-Gyeonggijeon_Shrine_Jeonju.jpg",
       },
       {
         id: "jeonju_bibimbap",
@@ -632,6 +656,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0316 Seoul → Beijing",
         flight: flights.CZ0316,
         notes: ["Vertrek Incheon Terminal 1", "Vroeg aanwezig zijn"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg/1280px-China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg",
       },
       {
         id: "flight_CZ0345",
@@ -639,6 +664,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0345 Beijing → Amsterdam",
         flight: flights.CZ0345,
         notes: ["3u50 overstap Beijing Daxing", "Aankomst Amsterdam 18:40"],
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg/1280px-China_Southern_Airlines_Boeing_737-800_%28B-5422%29_at_Guangzhou_Baiyun_International_Airport.jpg",
       },
     ],
   },

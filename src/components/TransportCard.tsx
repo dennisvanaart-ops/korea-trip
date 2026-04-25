@@ -2,6 +2,7 @@ import type { Transport } from "@/data/trip";
 import { FlightStatusCard } from "./FlightStatusCard";
 import { InfoBlock } from "./InfoBlock";
 import { MapButtons } from "./MapButtons";
+import { CardImage } from "./CardImage";
 
 interface Props {
   transport: Transport;
@@ -23,6 +24,7 @@ function typeLabel(type: Transport["type"]) {
 export function TransportCard({ transport }: Props) {
   return (
     <div className="rounded-xl bg-blue-50 border border-blue-100 shadow-sm overflow-hidden">
+      {transport.imageUrl && <CardImage src={transport.imageUrl} alt={transport.title} />}
       <div className="px-4 py-3 border-b border-blue-100">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-500">
           {typeLabel(transport.type)}

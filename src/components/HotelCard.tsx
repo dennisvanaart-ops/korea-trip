@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Hotel } from "@/data/trip";
 import { MapButtons } from "./MapButtons";
+import { CardImage } from "./CardImage";
 
 interface Props {
   hotel: Hotel;
@@ -10,6 +11,7 @@ interface Props {
 export function HotelCard({ hotel, compact = false }: Props) {
   const card = (
     <div className="rounded-xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+      <CardImage src={hotel.imageUrl} alt={hotel.name} />
       <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Hotel</p>
         <p className="text-base font-bold text-gray-900 mt-0.5">{hotel.name}</p>

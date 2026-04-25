@@ -1,6 +1,7 @@
 import type { Activity } from "@/data/trip";
 import { MapButtons } from "./MapButtons";
 import { InfoBlock } from "./InfoBlock";
+import { CardImage } from "./CardImage";
 
 const typeLabel: Record<Activity["type"], string> = {
   food: "Eten",
@@ -20,6 +21,7 @@ interface Props {
 export function ActivityCard({ activity, showMap = true }: Props) {
   return (
     <div className="rounded-xl bg-green-50 border border-green-100 shadow-sm overflow-hidden">
+      {activity.imageUrl && <CardImage src={activity.imageUrl} alt={activity.name} />}
       <div className="px-4 py-3 border-b border-green-100">
         <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
           {typeLabel[activity.type]}
