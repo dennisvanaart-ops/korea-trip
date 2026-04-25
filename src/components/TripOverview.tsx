@@ -1,6 +1,6 @@
 import { TRIP_TITLE, TRIP_DURATION } from "@/data/trip";
 import { TripStatusCard } from "./TripStatusCard";
-import { TripTimeline } from "./TripTimeline";
+import { TripNavigation } from "./TripNavigation";
 
 export function TripOverview() {
   return (
@@ -16,7 +16,7 @@ export function TripOverview() {
       </header>
 
       <TripStatusCard />
-      <TripTimeline />
+      <TripNavigation />
     </div>
   );
 }
