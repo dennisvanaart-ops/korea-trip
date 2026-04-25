@@ -1,0 +1,49 @@
+{
+  "hotels": {
+    "gracery_seoul":      "/images/hotel_gracery_seoul.jpg",
+    "sokcho":             "/images/hotel_morethan_sokcho.jpg",
+    "jukheon":            "/images/hotel_jukheon_andong.jpg",
+    "gem_stay":           "/images/hotel_gem_busan.jpg",
+    "best_western_jeonju":"/images/hotel_bestwestern_jeonju.jpg",
+    "weco_insadong":      "/images/hotel_weco_insadong.jpg"
+  },
+  "activities": {
+    "onion_anguk":        "/images/activity_onion_anguk.jpg",
+    "gyeongbokgung":      "/images/activity_gyeongbokgung_palace.jpg",
+    "bukchon":            "/images/activity_bukchon_hanok.jpg",
+    "gwangjang_market":   "/images/activity_gwangjang_market.jpg",
+    "mangwon_market":     "/images/activity_mangwon_market.jpg",
+    "cheonggyecheon":     "/images/activity_cheonggyecheon.jpg",
+    "ikseon_dong":        "/images/activity_ikseon_dong.jpg",
+    "insadong":           "/images/activity_insadong_street.jpg",
+    "myeongdong_kyoja":   "/images/activity_gwangjang_market.jpg",
+    "namsan_park":        "/images/activity_seoraksan_park.jpg",
+    "solsot":             "/images/activity_solsot_restaurant.jpg",
+    "artist_bakery":      "/images/activity_onion_anguk.jpg",
+    "downt_espresso":     "/images/activity_center_coffee.jpg",
+    "center_coffee":      "/images/activity_center_coffee.jpg",
+    "lowkey_coffee":      "/images/activity_lowkey_coffee.jpg",
+    "coffee_libre":       "/images/activity_coffee_libre.jpg",
+    "better_roasting":    "/images/activity_better_roasting_lab.jpg",
+    "dakhanmari":         "/images/activity_solsot_restaurant.jpg",
+    "seoraksan_hike":     "/images/activity_seoraksan_park.jpg",
+    "seoraksan_cable":    "/images/activity_seoraksan_cable_car.jpg",
+    "sokcho_beach":       "/images/activity_seoraksan_park.jpg",
+    "hahoe_village":      "/images/activity_hahoe_village.jpg",
+    "hahoe_viewpoint":    "/images/activity_hahoe_village.jpg",
+    "sky_capsule":        "/images/activity_sky_capsule_busan.jpg",
+    "haeundae_beach":     "/images/activity_haeundae_beach.jpg",
+    "jeonju_hanok":       "/images/activity_jeonju_hanok.jpg",
+    "gyeonggijeon":       "/images/activity_gyeonggijeon_shrine.jpg",
+    "jeonju_bibimbap":    "/images/activity_jeonju_bibimbap.jpg"
+  },
+  "transport": {
+    "flight_CZ0346":      "/images/transport_china_southern.jpg",
+    "flight_CZ0315":      "/images/transport_china_southern.jpg",
+    "flight_CZ0316":      "/images/transport_china_southern.jpg",
+    "flight_CZ0345":      "/images/transport_china_southern.jpg",
+    "transfer_incheon":   "/images/transport_airport_transfer.jpg",
+    "car_pickup":         "/images/transport_kia_k3.jpg",
+    "car_return":         "/images/transport_kia_k3.jpg"
+  }
+}
