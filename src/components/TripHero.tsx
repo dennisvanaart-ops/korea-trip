@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { RefreshButton } from "./RefreshButton";
 
@@ -34,8 +35,20 @@ export function TripHero() {
         }}
       />
 
-      {/* Refresh button — top right */}
-      <div className="absolute top-3 right-4 z-10">
+      {/* Top-right controls */}
+      <div className="absolute top-3 right-4 z-10 flex items-center gap-2">
+        <Link
+          href="/info"
+          aria-label="Reisdocumenten & praktische info"
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm active:bg-white/30 transition-colors"
+        >
+          {/* Document / passport icon */}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2.5" y="1.5" width="9" height="12" rx="1.5" stroke="white" strokeWidth="1.3" />
+            <path d="M5 5.5h4M5 7.5h4M5 9.5h2.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+            <path d="M11.5 4.5v9a1 1 0 001 1h.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
+          </svg>
+        </Link>
         <RefreshButton />
       </div>
 

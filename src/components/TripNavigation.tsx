@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { TripDayWheel } from "./TripDayWheel";
 import { TripTimeline } from "./TripTimeline";
@@ -54,21 +53,6 @@ export function TripNavigation() {
           </div>
         </div>
 
-        {/* Info shortcut */}
-        <div className="px-4 pb-2">
-          <Link
-            href="/info"
-            className="flex items-center justify-between w-full rounded-xl border border-gray-200 bg-white px-4 py-3 active:bg-gray-50"
-          >
-            <div className="flex items-center gap-2.5">
-              <span className="text-base">🗂️</span>
-              <span className="text-sm font-medium text-gray-700">Reisdocumenten & praktische info</span>
-            </div>
-            <svg className="text-gray-300" width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Link>
-        </div>
       </div>
 
       {/*
