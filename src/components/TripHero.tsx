@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { RefreshButton } from "./RefreshButton";
 
 export function TripHero() {
   const [imgError, setImgError] = useState(false);
@@ -32,6 +33,11 @@ export function TripHero() {
             : "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.25) 55%, transparent 100%)",
         }}
       />
+
+      {/* Refresh button — top right */}
+      <div className="absolute top-3 right-4 z-10">
+        <RefreshButton />
+      </div>
 
       {/* Text overlay */}
       <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10">
