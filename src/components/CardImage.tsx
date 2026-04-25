@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Props {
   src?: string;
@@ -20,13 +21,13 @@ export function CardImage({ src, alt }: Props) {
   }
 
   return (
-    <div className="aspect-video overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+    <div className="relative aspect-video overflow-hidden">
+      <Image
         src={src}
         alt={alt}
-        className="w-full h-full object-cover"
-        loading="lazy"
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, 640px"
         onError={() => setFailed(true)}
       />
     </div>

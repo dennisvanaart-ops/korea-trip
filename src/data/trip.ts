@@ -1,3 +1,10 @@
+import imageMap from "./image-map.json";
+
+// Typed helpers so the compiler catches typos in IDs.
+const hi = (id: keyof typeof imageMap.hotels)     => imageMap.hotels[id];
+const ai = (id: keyof typeof imageMap.activities)  => imageMap.activities[id];
+const ti = (id: keyof typeof imageMap.transport)   => imageMap.transport[id];
+
 export type ActivityType =
   | "food"
   | "coffee"
@@ -106,7 +113,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "2 mei",
     parking: "Ongeveer 20.000 KRW (±€14) per dag — auto nog niet nodig bij aankomst.",
     notes: ["Centraal gelegen in Jung-gu", "Vlakbij Myeongdong"],
-    imageUrl: "/images/hotel_gracery_seoul.jpg",
+    imageUrl: hi("gracery_seoul"),
   },
   sokcho: {
     id: "sokcho",
@@ -116,7 +123,7 @@ export const hotels: Record<string, Hotel> = {
     checkIn: "2 mei",
     checkOut: "5 mei",
     notes: ["Aan het strand van Sokcho"],
-    imageUrl: "/images/hotel_morethan_sokcho.jpg",
+    imageUrl: hi("sokcho"),
   },
   jukheon: {
     id: "jukheon",
@@ -131,7 +138,7 @@ export const hotels: Record<string, Hotel> = {
       "Check-in tussen 16:00 en 23:00",
       "Unieke ervaring in historisch pand",
     ],
-    imageUrl: "/images/activity_hahoe_village.jpg",
+    imageUrl: hi("jukheon"),
   },
   gem_stay: {
     id: "gem_stay",
@@ -143,7 +150,7 @@ export const hotels: Record<string, Hotel> = {
     parking:
       "7.700 KRW (±€5,40) per nacht — beperkt, mechanisch systeem. Geen grote auto's, geen elektrische voertuigen.",
     notes: ["Self check-in"],
-    imageUrl: "/images/hotel_gem_busan.jpg",
+    imageUrl: hi("gem_stay"),
   },
   best_western_jeonju: {
     id: "best_western_jeonju",
@@ -154,7 +161,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "10 mei",
     parking: "Ondergronds parkeren, buiten bij drukte",
     notes: ["Ontbijt inbegrepen", "Café, fitness, wasserette", "Rooftop garden", "Fietsverhuur"],
-    imageUrl: "/images/hotel_bestwestern_jeonju.jpg",
+    imageUrl: hi("best_western_jeonju"),
   },
   weco_insadong: {
     id: "weco_insadong",
@@ -165,7 +172,7 @@ export const hotels: Record<string, Hotel> = {
     checkOut: "12 mei",
     parking: "Beperkt parkeren in de buurt",
     notes: ["In het hart van Insadong"],
-    imageUrl: "/images/hotel_weco_insadong.jpg",
+    imageUrl: hi("weco_insadong"),
   },
 };
 
@@ -241,7 +248,7 @@ export const tripDays: TripDay[] = [
         type: "flight",
         title: "CZ0346 Amsterdam → Beijing",
         flight: flights.CZ0346,
-        imageUrl: "/images/transport_china_southern.jpg",
+        imageUrl: ti("flight_CZ0346"),
       },
     ],
     notes: ["Vertrek 21:40 — vroeg naar Schiphol", "Terminal D Schiphol"],
@@ -261,7 +268,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0315 Beijing → Seoul",
         flight: flights.CZ0315,
         notes: ["5u30 overstap Beijing Daxing", "Aankomst Incheon Terminal 1"],
-        imageUrl: "/images/transport_china_southern.jpg",
+        imageUrl: ti("flight_CZ0346"),
       },
       {
         id: "transfer_incheon",
@@ -276,7 +283,7 @@ export const tripDays: TripDay[] = [
           "Vluchttracking actief — chauffeur past wachttijd aan bij vertraging",
           "Directe rit naar hotel zonder tussenstops",
         ],
-        imageUrl: "/images/transport_airport_transfer.jpg",
+        imageUrl: ti("transfer_incheon"),
       },
     ],
     notes: ["Late aankomst — check-in na middernacht mogelijk"],
@@ -295,7 +302,7 @@ export const tripDays: TripDay[] = [
         type: "coffee",
         query: "Onion Anguk Seoul",
         description: "Trendy koffiebar in een gerenoveerd gebouw in Anguk.",
-        imageUrl: "/images/activity_onion_anguk.jpg",
+        imageUrl: ai("onion_anguk"),
       },
       {
         id: "gyeongbokgung",
@@ -304,7 +311,7 @@ export const tripDays: TripDay[] = [
         query: "Gyeongbokgung Palace Seoul",
         description: "Het grootste koninklijke paleis van Korea uit de Joseon-dynastie.",
         notes: ["Hanbok verhuur mogelijk aan de ingang", "Gesloten op dinsdag"],
-        imageUrl: "/images/activity_gyeongbokgung_palace.jpg",
+        imageUrl: ai("gyeongbokgung"),
       },
       {
         id: "bukchon",
@@ -313,7 +320,7 @@ export const tripDays: TripDay[] = [
         query: "Bukchon Hanok Village Seoul",
         description: "Historische wijk met traditionele hanok-huizen.",
         notes: ["Rustig in de vroege ochtend"],
-        imageUrl: "/images/activity_bukchon_hanok.jpg",
+        imageUrl: ai("bukchon"),
       },
       {
         id: "gwangjang_market",
@@ -322,7 +329,7 @@ export const tripDays: TripDay[] = [
         query: "Gwangjang Market Seoul",
         description: "Beroemde markt voor bindaetteok, mayak gimbap en meer.",
         notes: ["Alternatief: Mangwon Market"],
-        imageUrl: "/images/activity_gwangjang_market.jpg",
+        imageUrl: ai("gwangjang_market"),
       },
       {
         id: "cheonggyecheon",
@@ -330,7 +337,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Cheonggyecheon Stream Seoul",
         description: "Herstelde stadsbeek — rustige wandelpromenade in het centrum.",
-        imageUrl: "/images/activity_cheonggyecheon.jpg",
+        imageUrl: ai("cheonggyecheon"),
       },
       {
         id: "ikseon_dong",
@@ -338,7 +345,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Ikseon-dong Seoul",
         description: "Charmante steegjes met cafés, restaurants en kleine winkels.",
-        imageUrl: "/images/activity_ikseon_dong.jpg",
+        imageUrl: ai("ikseon_dong"),
       },
       {
         id: "insadong",
@@ -346,7 +353,7 @@ export const tripDays: TripDay[] = [
         type: "shopping",
         query: "Insadong Seoul",
         description: "Winkelstraat met kunst, antiek en lokale souvenirs.",
-        imageUrl: "/images/activity_insadong_street.jpg",
+        imageUrl: ai("insadong"),
       },
       {
         id: "myeongdong_kyoja",
@@ -355,7 +362,7 @@ export const tripDays: TripDay[] = [
         query: "Myeongdong Kyoja Seoul",
         description: "Iconisch restaurant voor kalguksu en mandu.",
         notes: ["Kan druk zijn — wachtrij mogelijk", "Back-up: Wolhwa Sikdang"],
-        imageUrl: "/images/activity_gwangjang_market.jpg",
+        imageUrl: ai("gwangjang_market"),
       },
     ],
   },
@@ -372,7 +379,7 @@ export const tripDays: TripDay[] = [
         name: "Downt Espresso",
         type: "coffee",
         query: "Downt Espresso Seoul",
-        imageUrl: "/images/activity_center_coffee.jpg",
+        imageUrl: ai("center_coffee"),
       },
       {
         id: "artist_bakery",
@@ -380,7 +387,7 @@ export const tripDays: TripDay[] = [
         type: "food",
         query: "Artist Bakery Seoul",
         description: "Populaire bakkerij met croissants en brood.",
-        imageUrl: "/images/activity_onion_anguk.jpg",
+        imageUrl: ai("onion_anguk"),
       },
       {
         id: "namsan_park",
@@ -389,28 +396,28 @@ export const tripDays: TripDay[] = [
         query: "Namsan Park Seoul",
         description: "Wandeling door Namsan Park met uitzicht op de stad.",
         notes: ["Kabelbaan mogelijk"],
-        imageUrl: "/images/activity_seoraksan_park.jpg",
+        imageUrl: ai("seoraksan_hike"),
       },
       {
         id: "solsot",
         name: "Solsot",
         type: "food",
         query: "Solsot Seoul",
-        imageUrl: "/images/activity_jeonju_bibimbap.jpg",
+        imageUrl: ai("jeonju_bibimbap"),
       },
       {
         id: "center_coffee",
         name: "Center Coffee",
         type: "coffee",
         query: "Center Coffee Seoul",
-        imageUrl: "/images/activity_lowkey_coffee.jpg",
+        imageUrl: ai("lowkey_coffee"),
       },
       {
         id: "lowkey_coffee",
         name: "Lowkey Coffee",
         type: "coffee",
         query: "Lowkey Coffee Seoul",
-        imageUrl: "/images/activity_lowkey_coffee.jpg",
+        imageUrl: ai("lowkey_coffee"),
       },
       {
         id: "coffee_libre",
@@ -418,14 +425,14 @@ export const tripDays: TripDay[] = [
         type: "coffee",
         query: "Coffee Libre Seoul",
         description: "Specialty roaster met meerdere vestigingen in Seoul.",
-        imageUrl: "/images/activity_coffee_libre.jpg",
+        imageUrl: ai("coffee_libre"),
       },
       {
         id: "better_roasting",
         name: "Better Roasting Lab",
         type: "coffee",
         query: "Better Roasting Lab Seoul",
-        imageUrl: "/images/activity_better_roasting_lab.jpg",
+        imageUrl: ai("better_roasting"),
       },
       {
         id: "juuneedu",
@@ -441,7 +448,7 @@ export const tripDays: TripDay[] = [
         query: "Jinkhwa Halmea Winjo Dakhanmari Seoul",
         description: "Traditionele dakhanmari — hele kip in bouillon.",
         notes: ["Back-up voor Myeongdong Kyoja"],
-        imageUrl: "/images/activity_solsot_restaurant.jpg",
+        imageUrl: ai("solsot"),
       },
     ],
   },
@@ -461,7 +468,7 @@ export const tripDays: TripDay[] = [
         address: "Seoul Yongsan",
         query: "Seoul Yongsan Car Rental",
         notes: ["Ophalen 09:30", "Kia K3 of vergelijkbaar"],
-        imageUrl: "/images/transport_kia_k3.jpg",
+        imageUrl: ti("car_pickup"),
       },
     ],
     notes: [
@@ -484,7 +491,7 @@ export const tripDays: TripDay[] = [
         query: "Seoraksan National Park",
         description: "Wandeling in een van Koreas mooiste bergparken.",
         notes: ["Vroeg vertrekken om drukte te vermijden"],
-        imageUrl: "/images/activity_seoraksan_park.jpg",
+        imageUrl: ai("seoraksan_hike"),
       },
       {
         id: "seoraksan_cable",
@@ -493,7 +500,7 @@ export const tripDays: TripDay[] = [
         query: "Seoraksan Cable Car",
         description: "Kabelbaan naar de toppen van Seoraksan.",
         notes: ["Optioneel bij goed weer", "Wachtrij mogelijk in het weekend"],
-        imageUrl: "/images/activity_seoraksan_cable_car.jpg",
+        imageUrl: ai("seoraksan_cable"),
       },
     ],
   },
@@ -512,7 +519,7 @@ export const tripDays: TripDay[] = [
         type: "outdoor",
         query: "Sokcho Beach",
         description: "Strand van Sokcho — ideaal voor een rustige ochtend.",
-        imageUrl: "/images/activity_seoraksan_park.jpg",
+        imageUrl: ai("seoraksan_hike"),
       },
     ],
   },
@@ -540,7 +547,7 @@ export const tripDays: TripDay[] = [
         query: "Hahoe Folk Village Andong",
         description: "UNESCO Werelderfgoedsite — levend dorpje met traditional hanok-huizen.",
         notes: ["Masker-dansen in het weekend mogelijk"],
-        imageUrl: "/images/activity_hahoe_village.jpg",
+        imageUrl: ai("hahoe_village"),
       },
       {
         id: "hahoe_viewpoint",
@@ -548,7 +555,7 @@ export const tripDays: TripDay[] = [
         type: "outdoor",
         query: "Buyongdae Cliff Andong Hahoe",
         description: "Rots uitzicht over de Nakdong bocht en het dorp.",
-        imageUrl: "/images/activity_hahoe_village.jpg",
+        imageUrl: ai("hahoe_village"),
       },
     ],
   },
@@ -576,7 +583,7 @@ export const tripDays: TripDay[] = [
           "Tijdslot voorkeur 12:00–14:00",
           "Terug via taxi of Beach Train",
         ],
-        imageUrl: "/images/activity_sky_capsule_busan.jpg",
+        imageUrl: ai("sky_capsule"),
       },
       {
         id: "haeundae_beach",
@@ -584,7 +591,7 @@ export const tripDays: TripDay[] = [
         type: "outdoor",
         query: "Haeundae Beach Busan",
         description: "Het bekendste strand van Korea.",
-        imageUrl: "/images/activity_haeundae_beach.jpg",
+        imageUrl: ai("haeundae_beach"),
       },
     ],
     notes: ["Vertrek Andong ~08:00, aankomst Busan ~11:30"],
@@ -611,7 +618,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Jeonju Hanok Village",
         description: "700+ traditionele hanok-huizen, cafés en ateliers.",
-        imageUrl: "/images/activity_jeonju_hanok.jpg",
+        imageUrl: ai("jeonju_hanok"),
       },
       {
         id: "gyeonggijeon",
@@ -619,7 +626,7 @@ export const tripDays: TripDay[] = [
         type: "sightseeing",
         query: "Gyeonggijeon Shrine Jeonju",
         description: "Koninklijk portret-heiligdom met bamboepad.",
-        imageUrl: "/images/activity_gyeonggijeon_shrine.jpg",
+        imageUrl: ai("gyeonggijeon"),
       },
       {
         id: "jeonju_bibimbap",
@@ -627,7 +634,7 @@ export const tripDays: TripDay[] = [
         type: "food",
         query: "Jeonju Bibimbap restaurant",
         description: "Authentieke bibimbap — de trots van Jeonju.",
-        imageUrl: "/images/activity_jeonju_bibimbap.jpg",
+        imageUrl: ai("jeonju_bibimbap"),
       },
     ],
   },
@@ -672,7 +679,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0316 Seoul → Beijing",
         flight: flights.CZ0316,
         notes: ["Vertrek Incheon Terminal 1", "Vroeg aanwezig zijn"],
-        imageUrl: "/images/transport_china_southern.jpg",
+        imageUrl: ti("flight_CZ0346"),
       },
       {
         id: "flight_CZ0345",
@@ -680,7 +687,7 @@ export const tripDays: TripDay[] = [
         title: "CZ0345 Beijing → Amsterdam",
         flight: flights.CZ0345,
         notes: ["3u50 overstap Beijing Daxing", "Aankomst Amsterdam 18:40"],
-        imageUrl: "/images/transport_china_southern.jpg",
+        imageUrl: ti("flight_CZ0346"),
       },
     ],
   },
