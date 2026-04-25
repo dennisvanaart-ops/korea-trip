@@ -19,19 +19,17 @@ function diffDays(from: string, to: string): number {
   return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+// Returns YYYY-MM-DD in device-local timezone (getFullYear/Month/Date are local, not UTC).
+// Never use toISOString().split('T')[0] — that returns UTC date, wrong at midnight in Korea.
+export function getLocalDateString(date: Date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function getTodayAmsterdam(): string {
-  const parts = new Intl.DateTimeFormat("nl-NL", {
-    timeZone: "Europe/Amsterdam",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-
-  const year = parts.find((p) => p.type === "year")?.value ?? "2026";
-  const month = parts.find((p) => p.type === "month")?.value ?? "01";
-  const day = parts.find((p) => p.type === "day")?.value ?? "01";
-
-  return `${year}-${month}-${day}`;
+  return getLocalDateString(new Date());
 }
 
 export function getTripProgress(today: string, days: TripDay[]): TripProgress {
