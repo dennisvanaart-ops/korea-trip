@@ -10,9 +10,17 @@ export function TripNavigation() {
   const [view, setView] = useState<View>("wheel");
 
   return (
-    <div>
-      <div className="flex items-center justify-between px-4 mb-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Dagplanning</p>
+    /*
+     * flex-1 min-h-0: take all remaining height from TripOverview,
+     * allow shrinking below natural content height (required for overflow
+     * to work correctly in a flex child).
+     */
+    <div className="flex flex-col flex-1 min-h-0">
+      {/* Header row — fixed height */}
+      <div className="flex items-center justify-between px-4 py-2 flex-shrink-0">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+          Dagplanning
+        </p>
         <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-gray-50 text-xs">
           <button
             onClick={() => setView("wheel")}
@@ -39,7 +47,13 @@ export function TripNavigation() {
         </div>
       </div>
 
-      {view === "wheel" ? <TripDayWheel /> : <TripTimeline />}
+      {/*
+       * Content area — flex-1 min-h-0 so the wheel (or list) fills
+       * exactly the remaining space without overflow leaking upward.
+       */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        {view === "wheel" ? <TripDayWheel /> : <TripTimeline />}
+      </div>
     </div>
   );
 }
