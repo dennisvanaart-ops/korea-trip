@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { tripDays, getDayByDate } from "@/data/trip";
 import { DayDetail } from "@/components/DayDetail";
+import { BackButton } from "@/components/BackButton";
 
 interface Props {
   params: Promise<{ date: string }>;
@@ -38,21 +39,7 @@ export default async function DayPage({ params }: Props) {
   return (
     <div className="pb-12">
       <header className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-gray-100 px-4 py-3">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 active:text-gray-700"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M10 13L5 8l5-5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Alle dagen
-        </Link>
+        <BackButton />
       </header>
 
       <div className="px-4 pt-6 pb-4">

@@ -1,19 +1,33 @@
+"use client";
+
 import Link from "next/link";
 import type { TripDay } from "@/data/trip";
 
 interface Props {
   day: TripDay;
   isToday?: boolean;
+  /** Called just before navigating; receives the current scroll offset of the nearest scroll container */
+  onNavigate?: (scrollY: number) => void;
 }
 
-export function DayCard({ day, isToday = false }: Props) {
+export function DayCard({ day, isToday = false, onNavigate }: Props) {
   const dateObj = new Date(`${day.date}T12:00:00`);
   const weekday = dateObj.toLocaleDateString("nl-NL", { weekday: "short" });
   const dayNum = dateObj.getDate();
   const month = dateObj.toLocaleDateString("nl-NL", { month: "short" });
 
   return (
-    <Link href={`/day/${day.date}`} className="block" id={isToday ? "today-card" : undefined}>
+    <Link
+      href={`/day/${day.date}`}
+      className="block"
+      id={isToday ? "today-card" : undefined}
+      onClick={() => {
+        if (!onNavigate) return;
+        // Capture scroll offset from the nearest scrollable ancestor
+        const container = document.querySelector(".overflow-y-auto") as HTMLElement | null;
+        onNavigate(container?.scrollTop ?? 0);
+      }}
+    >
       <div
         className={[
           "flex items-start gap-4 rounded-xl border shadow-sm px-4 py-4 active:bg-gray-50",

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { tripDays } from "@/data/trip";
 import type { TripDay } from "@/data/trip";
 import { getToday, getTripProgress } from "@/lib/tripProgress";
+import { getNavigationState, saveNavigationState } from "@/lib/navigationState";
 
 // Base dimensions — all cards use the same snap stride so math stays simple.
 // The active card looks bigger via horizontal margin & shadow, not height.
@@ -17,11 +18,13 @@ function WheelCard({
   distance,
   isToday,
   dayIndex,
+  onNavigate,
 }: {
   day: TripDay;
   distance: number;
   isToday: boolean;
   dayIndex: number;
+  onNavigate: () => void;
 }) {
   const dateObj = new Date(`${day.date}T12:00:00`);
   const weekday = dateObj.toLocaleDateString("nl-NL", { weekday: "short" });
@@ -55,7 +58,7 @@ function WheelCard({
   }
 
   return (
-    <Link href={`/day/${day.date}`} className={`block ${mx}`}>
+    <Link href={`/day/${day.date}`} className={`block ${mx}`} onClick={onNavigate}>
       <div
         style={{
           opacity,
@@ -161,13 +164,16 @@ export function TripDayWheel() {
   const today = getToday();
   const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
 
+  // Priority: sessionStorage saved index → today's index → 0
   const initialIndex = useMemo(() => {
+    const saved = getNavigationState().wheelActiveIndex;
+    if (saved !== undefined && saved >= 0 && saved < tripDays.length) return saved;
     if (progress.status === "active" && progress.currentDayNumber !== null) {
       return progress.currentDayNumber - 1;
     }
     if (progress.status === "past") return tripDays.length - 1;
     return 0;
-  }, [progress]);
+  }, [progress]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [activeIndex, setActiveIndex] = useState(initialIndex);
 
@@ -298,6 +304,13 @@ export function TripDayWheel() {
                 distance={distance}
                 isToday={isToday}
                 dayIndex={i}
+                onNavigate={() =>
+                  saveNavigationState({
+                    selectedDate: day.date,
+                    sourceView: "wheel",
+                    wheelActiveIndex: i,
+                  })
+                }
               />
             </div>
           );

@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TripDayWheel } from "./TripDayWheel";
 import { TripTimeline } from "./TripTimeline";
+import { getNavigationState, saveNavigationState } from "@/lib/navigationState";
+import type { SourceView } from "@/lib/navigationState";
 
-type View = "wheel" | "list";
-
-/**
- * Fills the remaining height below hero + status card.
- *
- * Structure:
- *   flex flex-col flex-1 min-h-0
- *     ├── header row          (flex-shrink-0)
- *     └── content area        (flex-1 min-h-0 overflow-y-auto overscroll-contain)
- *           ├── TripDayWheel  (height:100%, own internal snap-scroll)
- *           └── TripTimeline  (natural height, scrolls via content area)
- */
 export function TripNavigation() {
-  const [view, setView] = useState<View>("wheel");
+  // Read last-used view from sessionStorage so switching back from a day
+  // detail lands in the same tab the user left from.
+  const [view, setView] = useState<SourceView>("wheel");
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const saved = getNavigationState().sourceView;
+    if (saved === "list" || saved === "wheel") setView(saved);
+    setHydrated(true);
+  }, []);
+
+  function switchView(v: SourceView) {
+    setView(v);
+    saveNavigationState({ sourceView: v });
+  }
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -28,23 +32,19 @@ export function TripNavigation() {
         </p>
         <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-gray-50 text-xs">
           <button
-            onClick={() => setView("wheel")}
+            onClick={() => switchView("wheel")}
             className={[
               "px-3 py-1.5 font-medium transition-colors",
-              view === "wheel"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500",
+              view === "wheel" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
             ].join(" ")}
           >
             Rol
           </button>
           <button
-            onClick={() => setView("list")}
+            onClick={() => switchView("list")}
             className={[
               "px-3 py-1.5 font-medium transition-colors",
-              view === "list"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500",
+              view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500",
             ].join(" ")}
           >
             Lijst
@@ -53,17 +53,11 @@ export function TripNavigation() {
       </div>
 
       {/*
-       * Content area:
-       * - flex-1 min-h-0: fills remaining height, can shrink below content size
-       * - overflow-y-auto: scrolls when list is active
-       * - overscroll-contain: wheel's internal scroll won't bubble up to body
-       *
-       * When wheel is active, TripDayWheel fills this area via height:100%
-       * and manages its own snap-scroll — this layer has nothing to scroll.
-       * When list is active, TripTimeline grows naturally and this layer scrolls.
+       * Content area — flex-1 min-h-0 so wheel fills remaining height.
+       * Don't render until hydrated so the view matches sessionStorage.
        */}
       <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-        {view === "wheel" ? <TripDayWheel /> : <TripTimeline />}
+        {hydrated && (view === "wheel" ? <TripDayWheel /> : <TripTimeline />)}
       </div>
     </div>
   );
