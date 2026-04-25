@@ -6,9 +6,11 @@ import { tripDays } from "@/data/trip";
 import type { TripDay } from "@/data/trip";
 import { getToday, getTripProgress } from "@/lib/tripProgress";
 
-const CARD_H = 84;
-const GAP = 8;
-const STRIDE = CARD_H + GAP; // 92px per item
+// Base dimensions — all cards use the same snap stride so math stays simple.
+// The active card looks bigger via horizontal margin & shadow, not height.
+const CARD_H = 80;
+const GAP = 10;
+const STRIDE = CARD_H + GAP; // 90px per snap stop
 
 function WheelCard({
   day,
@@ -28,31 +30,37 @@ function WheelCard({
 
   const isActive = distance === 0;
 
-  // Stronger wheel effect — items far away almost disappear
-  const opacity = distance === 0 ? 1 : distance === 1 ? 0.5 : 0.18;
-  const scale = distance === 0 ? 1 : distance === 1 ? 0.91 : 0.82;
-  const blur = distance >= 2 ? "blur(1px)" : "none";
+  // Subtle wheel: gentle falloff, no blur
+  const opacity =
+    distance === 0 ? 1 : distance === 1 ? 0.58 : distance === 2 ? 0.28 : 0.14;
+  const scale =
+    distance === 0 ? 1 : distance === 1 ? 0.96 : 0.93;
 
-  let borderClass = "border-gray-200 bg-gray-50/80";
+  // Active card: slightly wider (less horizontal margin)
+  const mx = isActive ? "mx-3" : "mx-5";
+
+  let borderClass: string;
   let shadowStyle: React.CSSProperties = {};
+
   if (isActive) {
     if (isToday) {
-      borderClass = "border-green-300 bg-green-50";
-      shadowStyle = { boxShadow: "0 4px 16px 0 rgb(134 239 172 / 0.45)" };
+      borderClass = "border-green-300 bg-green-50/90";
+      shadowStyle = { boxShadow: "0 3px 12px 0 rgba(134,239,172,0.40)" };
     } else {
       borderClass = "border-blue-200 bg-white";
-      shadowStyle = { boxShadow: "0 4px 16px 0 rgb(191 219 254 / 0.5)" };
+      shadowStyle = { boxShadow: "0 3px 12px 0 rgba(191,219,254,0.45)" };
     }
+  } else {
+    borderClass = "border-gray-200 bg-gray-50/70";
   }
 
   return (
-    <Link href={`/day/${day.date}`} className="block mx-4">
+    <Link href={`/day/${day.date}`} className={`block ${mx}`}>
       <div
         style={{
           opacity,
           transform: `scale(${scale})`,
-          filter: blur,
-          transition: "opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease",
+          transition: "opacity 0.16s ease, transform 0.16s ease",
           height: CARD_H,
           ...shadowStyle,
         }}
@@ -85,10 +93,7 @@ function WheelCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span
-              className={[
-                "text-base leading-none",
-                !isActive && "opacity-50",
-              ]
+              className={["text-base leading-none", !isActive && "opacity-40"]
                 .filter(Boolean)
                 .join(" ")}
             >
@@ -166,27 +171,28 @@ export function TripDayWheel() {
 
   const [activeIndex, setActiveIndex] = useState(initialIndex);
 
-  // outerRef measures the visible container height for precise spacer calc.
   const outerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // spacerH: how many px to pad before card-0 and after last card so that
-  // card-i centers at scrollTop = i * STRIDE.
+  // spacerH centres the focus card at ~47% of the container height
+  // (slightly above center feels more natural on a phone)
   const [spacerH, setSpacerH] = useState(0);
 
-  // Step 1: measure container, compute spacer (before first paint).
   useLayoutEffect(() => {
     const el = outerRef.current;
     if (!el) return;
-    const compute = () =>
-      setSpacerH(Math.max(0, Math.floor(el.clientHeight / 2 - CARD_H / 2)));
+    const compute = () => {
+      // 47% gives a focus position that reads as "center" but sits very
+      // slightly higher — removes the feeling of the card being low.
+      const focusOffset = Math.floor(el.clientHeight * 0.47 - CARD_H / 2);
+      setSpacerH(Math.max(0, focusOffset));
+    };
     compute();
     const ro = new ResizeObserver(compute);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Step 2: once spacer is known, jump scroll to initial day (before paint).
   useLayoutEffect(() => {
     const el = scrollRef.current;
     if (!el || spacerH === 0) return;
@@ -194,7 +200,6 @@ export function TripDayWheel() {
     setActiveIndex(initialIndex);
   }, [initialIndex, spacerH]);
 
-  // Step 3: track active index as the user scrolls.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -224,16 +229,18 @@ export function TripDayWheel() {
   const showTodayButton =
     progress.status === "active" && activeIndex !== initialIndex;
 
-  // Gradient colour matching the page background (gray-50)
   const BG = "rgb(249 250 251)";
 
+  // Focus band top position matches the spacer calculation
+  const focusBandTop = spacerH > 0 ? spacerH : undefined;
+
   return (
-    <div ref={outerRef} className="relative" style={{ height: "62svh" }}>
-      {/* Top fade */}
+    <div ref={outerRef} className="relative" style={{ height: "54svh" }}>
+      {/* Top fade — less aggressive so cards appear closer to top */}
       <div
         className="absolute inset-x-0 top-0 z-10 pointer-events-none"
         style={{
-          height: "28%",
+          height: "22%",
           background: `linear-gradient(to bottom, ${BG} 0%, transparent 100%)`,
         }}
       />
@@ -242,21 +249,24 @@ export function TripDayWheel() {
       <div
         className="absolute inset-x-0 bottom-0 z-10 pointer-events-none"
         style={{
-          height: "28%",
+          height: "22%",
           background: `linear-gradient(to top, ${BG} 0%, transparent 100%)`,
         }}
       />
 
-      {/* Focus-zone highlight ring — sits at exact vertical centre */}
-      <div
-        className="absolute inset-x-4 z-10 pointer-events-none rounded-2xl"
-        style={{
-          top: `calc(50% - ${CARD_H / 2}px)`,
-          height: CARD_H,
-          background: "rgba(240, 253, 244, 0.4)",
-          boxShadow: "inset 0 0 0 1px rgba(134, 239, 172, 0.5)",
-        }}
-      />
+      {/* Subtle focus band — only visible once spacer is computed */}
+      {focusBandTop !== undefined && (
+        <div
+          className="absolute inset-x-0 z-0 pointer-events-none"
+          style={{
+            top: focusBandTop,
+            height: CARD_H,
+            background: "rgba(248, 250, 252, 0.6)",
+            borderTop: "1px solid rgba(203, 213, 225, 0.35)",
+            borderBottom: "1px solid rgba(203, 213, 225, 0.35)",
+          }}
+        />
+      )}
 
       {/* Scroll container */}
       <div
@@ -264,13 +274,11 @@ export function TripDayWheel() {
         className="absolute inset-0 overflow-y-scroll overscroll-contain"
         style={{
           scrollSnapType: "y mandatory",
-          // hide scrollbar cross-browser
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
       >
-        {/* Top spacer — exact px so card-0 snaps to center */}
-        <div style={{ height: spacerH, flexShrink: 0 }} />
+        <div style={{ height: spacerH }} />
 
         {tripDays.map((day, i) => {
           const isToday = progress.status === "active" && day.date === today;
@@ -295,11 +303,10 @@ export function TripDayWheel() {
           );
         })}
 
-        {/* Bottom spacer */}
-        <div style={{ height: spacerH, flexShrink: 0 }} />
+        <div style={{ height: spacerH }} />
       </div>
 
-      {/* Floating "Vandaag" button — only during trip when scrolled away */}
+      {/* "Vandaag" jump button */}
       {showTodayButton && (
         <button
           onClick={scrollToToday}
