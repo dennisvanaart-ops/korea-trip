@@ -3,6 +3,7 @@ import { HotelCard } from "./HotelCard";
 import { TransportCard } from "./TransportCard";
 import { ActivityCard } from "./ActivityCard";
 import { InfoBlock } from "./InfoBlock";
+import { DayArchive } from "./DayArchive";
 
 interface Props {
   day: TripDay;
@@ -57,6 +58,8 @@ export function DayDetail({ day }: Props) {
           </div>
         </section>
       )}
+
+      <DayArchive date={day.date} />
     </div>
   );
 }
