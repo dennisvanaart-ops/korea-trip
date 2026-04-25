@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { tripDays } from "@/data/trip";
 import type { TripDay } from "@/data/trip";
-import { getTodayAmsterdam, getTripProgress } from "@/lib/tripProgress";
+import { getToday, getTripProgress } from "@/lib/tripProgress";
 
 const CARD_H = 84;
 const GAP = 8;
@@ -135,7 +135,7 @@ function WheelCard({
 }
 
 export function TripDayWheel() {
-  const today = getTodayAmsterdam();
+  const today = getToday();
   const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
 
   const initialIndex = useMemo(() => {

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { tripDays } from "@/data/trip";
-import { getTodayAmsterdam, getTripProgress } from "@/lib/tripProgress";
+import { getToday, getTripProgress } from "@/lib/tripProgress";
 
 export function TripStatusCard() {
-  const today = getTodayAmsterdam();
+  const today = getToday();
   const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
 
   const formattedStart = new Date(
