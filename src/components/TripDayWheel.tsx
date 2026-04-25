@@ -149,16 +149,10 @@ export function TripDayWheel() {
       style={{
         height: "60svh",
         scrollSnapType: "y mandatory",
-        // hide scrollbar visually but keep functional
         scrollbarWidth: "none",
+        paddingBottom: 8,
       }}
     >
-      {/* Top spacer so first card can center */}
-      <div
-        aria-hidden="true"
-        style={{ height: `calc(50% - ${CARD_H / 2}px)` }}
-      />
-
       {tripDays.map((day, i) => {
         const isToday = progress.status === "active" && day.date === today;
         const distance = Math.abs(i - activeIndex);
@@ -170,7 +164,7 @@ export function TripDayWheel() {
             style={{
               height: CARD_H,
               marginBottom: i < tripDays.length - 1 ? GAP : 0,
-              scrollSnapAlign: "center",
+              scrollSnapAlign: "start",
               scrollSnapStop: "always",
             }}
           >
@@ -178,12 +172,6 @@ export function TripDayWheel() {
           </div>
         );
       })}
-
-      {/* Bottom spacer so last card can center */}
-      <div
-        aria-hidden="true"
-        style={{ height: `calc(50% - ${CARD_H / 2}px)` }}
-      />
     </div>
   );
 }
