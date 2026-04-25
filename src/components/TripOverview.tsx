@@ -1,5 +1,6 @@
-import { tripDays, TRIP_TITLE, TRIP_DURATION } from "@/data/trip";
-import { DayCard } from "./DayCard";
+import { TRIP_TITLE, TRIP_DURATION } from "@/data/trip";
+import { TripStatusCard } from "./TripStatusCard";
+import { TripTimeline } from "./TripTimeline";
 
 export function TripOverview() {
   return (
@@ -14,11 +15,8 @@ export function TripOverview() {
         </p>
       </header>
 
-      <div className="px-4 space-y-2 pb-12">
-        {tripDays.map((day) => (
-          <DayCard key={day.date} day={day} />
-        ))}
-      </div>
+      <TripStatusCard />
+      <TripTimeline />
     </div>
   );
 }
