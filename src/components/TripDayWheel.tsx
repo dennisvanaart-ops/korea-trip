@@ -28,9 +28,9 @@ function WheelCard({
   const dayNum = dateObj.getDate();
   const month = dateObj.toLocaleDateString("nl-NL", { month: "short" });
 
-  const opacity = distance === 0 ? 1 : distance === 1 ? 0.55 : 0.25;
-  const scale = distance === 0 ? 1 : distance === 1 ? 0.92 : 0.84;
-  const blur = distance >= 2 ? "blur(0.5px)" : "none";
+  const opacity = distance === 0 ? 1 : distance === 1 ? 0.5 : 0.2;
+  const scale = distance === 0 ? 1 : distance === 1 ? 0.91 : 0.82;
+  const blur = distance >= 2 ? "blur(0.75px)" : "none";
 
   const isActive = distance === 0;
 
@@ -199,6 +199,16 @@ export function TripDayWheel() {
         style={{
           height: "30%",
           background: "linear-gradient(to top, rgb(249 250 251) 0%, transparent 100%)",
+        }}
+      />
+
+      {/* Central focus ring */}
+      <div
+        className="absolute inset-x-4 z-10 pointer-events-none rounded-2xl ring-1 ring-green-200/60"
+        style={{
+          top: `calc(50% - ${CARD_H / 2}px)`,
+          height: CARD_H,
+          background: "rgba(240, 253, 244, 0.35)",
         }}
       />
 

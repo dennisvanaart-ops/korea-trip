@@ -5,6 +5,10 @@ import { TRIP_TITLE } from "@/data/trip";
 export const metadata: Metadata = {
   title: TRIP_TITLE,
   description: "Zuid-Korea rondreis 28 april – 12 mei 2026",
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -17,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="nl">
       <head>
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

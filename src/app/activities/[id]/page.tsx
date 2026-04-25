@@ -53,7 +53,7 @@ export default async function ActivityPage({ params }: Props) {
       </div>
 
       <div className="px-4">
-        <ActivityCard activity={activity} showMap />
+        <ActivityCard activity={activity} />
       </div>
     </div>
   );
