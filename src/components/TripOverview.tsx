@@ -21,7 +21,7 @@ export function TripOverview() {
   return (
     <div
       className="flex flex-col overflow-hidden"
-      style={{ height: "100dvh" }}
+      style={{ height: "calc(100dvh - 56px - env(safe-area-inset-bottom, 0px))" }}
     >
       {/* ── Static top — never moves ─────────────────────────────────────── */}
       <div className="flex-shrink-0">
