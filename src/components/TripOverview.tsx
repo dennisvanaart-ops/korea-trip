@@ -5,22 +5,15 @@ import { TripNavigation } from "./TripNavigation";
 /**
  * Root homepage layout.
  *
- * Uses 100dvh so the page never scrolls at the body level.
- * TripNavigation (and the wheel inside it) fills whatever height
- * remains after hero + status card — the wheel container is then
- * measured by ResizeObserver so the focus card lands at exact center.
+ * Normal document flow — the page scrolls naturally.
+ * TripDayWheel has its own fixed-height scroll container so its internal
+ * snap-scroll is isolated from the page scroll.
  */
 export function TripOverview() {
   return (
-    <div
-      className="flex flex-col overflow-hidden"
-      style={{ height: "100dvh" }}
-    >
-      {/* ── Static top section ────────────────────────── */}
+    <div className="min-h-screen">
       <TripHero />
       <TripStatusCard />
-
-      {/* ── Dynamic wheel section — fills the rest ────── */}
       <TripNavigation />
     </div>
   );

@@ -235,7 +235,7 @@ export function TripDayWheel() {
   const focusBandTop = spacerH > 0 ? spacerH : undefined;
 
   return (
-    <div ref={outerRef} className="relative" style={{ height: "100%" }}>
+    <div ref={outerRef} className="relative" style={{ height: "min(520px, 62svh)" }}>
       {/* Top fade — less aggressive so cards appear closer to top */}
       <div
         className="absolute inset-x-0 top-0 z-10 pointer-events-none"
