@@ -1,5 +1,6 @@
 import type { TripDay } from "@/data/trip";
 import { TRIP_START, TRIP_END } from "@/data/trip";
+import { validateNavLinks } from "./navLinks";
 
 export type TripStatus = "upcoming" | "active" | "past";
 
@@ -157,6 +158,7 @@ export function validateTripProgress(days: TripDay[]): ValidationResult {
     return { label, passed, detail };
   }
 
-  const results = [...progressResults, testMidnight()];
+  const navResults = validateNavLinks().results;
+  const results = [...progressResults, testMidnight(), ...navResults];
   return { passed: results.every((r) => r.passed), results };
 }

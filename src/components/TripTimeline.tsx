@@ -10,28 +10,34 @@ export function TripTimeline() {
   const today = getToday();
   const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
   const todayRef = useRef<HTMLDivElement>(null);
+  const lastDayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Restore scroll position when coming back from a day detail page,
-  // or scroll to today on first visit.
+  // or auto-scroll to the relevant day on first visit.
   useEffect(() => {
     const { sourceView, listScrollY } = getNavigationState();
 
     if (sourceView === "list" && listScrollY !== undefined && listScrollY > 0) {
       // Coming back from a list card click — restore exact scroll position.
-      // Use the parent scroll container (TripNavigation's overflow-y-auto div).
       const container = containerRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
       if (container) {
-        // Small rAF delay to ensure layout is complete before setting scrollTop.
         requestAnimationFrame(() => { container.scrollTop = listScrollY; });
       }
     } else if (progress.status === "active" && todayRef.current) {
-      // Fresh visit during trip — scroll to today.
+      // During trip — scroll to today.
       const timer = setTimeout(() => {
         todayRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 300);
       return () => clearTimeout(timer);
+    } else if (progress.status === "past" && lastDayRef.current) {
+      // After trip — scroll to the last day.
+      const timer = setTimeout(() => {
+        lastDayRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+      return () => clearTimeout(timer);
     }
+    // upcoming → stays at top (first day is already visible)
   }, [progress.status]);
 
   function handleCardClick(date: string, scrollY: number) {
@@ -44,10 +50,14 @@ export function TripTimeline() {
 
   return (
     <div ref={containerRef} className="px-4 space-y-2 pb-12">
-      {tripDays.map((day) => {
+      {tripDays.map((day, idx) => {
         const isToday = progress.status === "active" && day.date === today;
+        const isLast = idx === tripDays.length - 1;
         return (
-          <div key={day.date} ref={isToday ? todayRef : undefined}>
+          <div
+            key={day.date}
+            ref={isToday ? todayRef : isLast ? lastDayRef : undefined}
+          >
             <DayCard
               day={day}
               isToday={isToday}
