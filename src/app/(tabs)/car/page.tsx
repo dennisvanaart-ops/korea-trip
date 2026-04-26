@@ -1,3 +1,5 @@
+import { NavTrigger } from "@/components/NavTrigger";
+
 export const metadata = { title: "Huurauto — Korea Reis" };
 
 function Card({ children }: { children: React.ReactNode }) {
@@ -30,48 +32,39 @@ export default function CarPage() {
       </div>
 
       <div className="px-4 space-y-4">
+        {/* Reservering */}
         <Card>
           <p className="text-sm font-semibold text-gray-800">Reserveringsdetails</p>
           <Hr />
-          <Row
-            label="Bookingnummer"
-            value={<span className="font-mono font-semibold">720784480</span>}
-          />
+          <Row label="Bookingnummer" value={<span className="font-mono font-semibold">720784480</span>} />
           <Row label="Auto" value="Kia K3 of vergelijkbaar" />
         </Card>
 
+        {/* Ophalen */}
         <Card>
-          <p className="text-sm font-semibold text-gray-800">Ophalen</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-gray-800">Ophalen</p>
+            <NavTrigger name="Autoverhuur Seoul Yongsan" query="Seoul Yongsan Car Rental" />
+          </div>
           <Hr />
           <Row label="Datum" value="2 mei 2026" />
           <Row label="Tijd" value="09:30" />
           <Row label="Locatie" value="Seoul Yongsan" />
-          <a
-            href="https://www.google.com/maps/search/Seoul+Yongsan+Car+Rental"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-blue-50 border border-blue-100 px-3 py-2 text-xs font-medium text-blue-700 active:bg-blue-100"
-          >
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M8 1.5C5.515 1.5 3.5 3.515 3.5 6c0 3.75 4.5 8.5 4.5 8.5S12.5 9.75 12.5 6c0-2.485-2.015-4.5-4.5-4.5z"
-                stroke="currentColor"
-                strokeWidth="1.4"
-              />
-              <circle cx="8" cy="6" r="1.5" stroke="currentColor" strokeWidth="1.3" />
-            </svg>
-            Navigeer naar ophaallocatie
-          </a>
         </Card>
 
+        {/* Inleveren */}
         <Card>
-          <p className="text-sm font-semibold text-gray-800">Inleveren</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-gray-800">Inleveren</p>
+            <NavTrigger name="Autoverhuur Seoul Yongsan" query="Seoul Yongsan Car Rental" />
+          </div>
           <Hr />
           <Row label="Datum" value="11 mei 2026" />
           <Row label="Tijd" value="17:30" />
           <Row label="Locatie" value="Seoul Yongsan" />
         </Card>
 
+        {/* Aandachtspunten */}
         <Card>
           <p className="text-sm font-semibold text-gray-800">Aandachtspunten</p>
           <Hr />

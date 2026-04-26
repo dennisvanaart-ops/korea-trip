@@ -1,4 +1,5 @@
 import { hotels } from "@/data/trip";
+import { NavTrigger } from "@/components/NavTrigger";
 
 export const metadata = { title: "Hotels — Korea Reis" };
 
@@ -43,11 +44,18 @@ export default function HotelsPage() {
       <div className="px-4 space-y-4">
         {hotelList.map(({ h, city, nights }) => (
           <Card key={h.id}>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">{h.name}</p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {city} · {nights}
-              </p>
+            {/* Header: name + nav button */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-800 leading-snug">{h.name}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{city} · {nights}</p>
+              </div>
+              <NavTrigger
+                name={h.name}
+                query={h.query}
+                address={h.address}
+                className="flex-shrink-0 mt-0.5"
+              />
             </div>
             <Hr />
             <Row label="Adres" value={h.address} />
@@ -60,9 +68,7 @@ export default function HotelsPage() {
                 value={
                   <span className="text-right">
                     {h.notes.map((n, i) => (
-                      <span key={i} className="block">
-                        {n}
-                      </span>
+                      <span key={i} className="block">{n}</span>
                     ))}
                   </span>
                 }
