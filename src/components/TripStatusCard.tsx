@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useTripStateContext } from "@/lib/TripStateContext";
 import { tripDays } from "@/data/trip";
-import { getToday, getTripProgress } from "@/lib/tripProgress";
 import { getDayType } from "@/lib/tripHelpers";
 import { TRIP_START, TRIP_END } from "@/data/trip";
 
@@ -16,8 +15,7 @@ function fmt(iso: string) {
 }
 
 export function TripStatusCard() {
-  const today = getToday();
-  const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
+  const { progress } = useTripStateContext();
 
   // ── VOOR DE REIS ─────────────────────────────────────────────────────────
   if (progress.status === "upcoming") {
@@ -67,13 +65,11 @@ export function TripStatusCard() {
   const dayIdx = day ? tripDays.findIndex((d) => d.date === day.date) : -1;
   const nextDay = dayIdx >= 0 ? tripDays[dayIdx + 1] ?? null : null;
   const dayType = day ? getDayType(day) : null;
-
-  // Short status line — use location (e.g. "Seoul", "Seoul → Sokcho")
   const statusLine = day?.location ?? `Dag ${progress.currentDayNumber}`;
 
   return (
     <div className="mx-4 mb-3 rounded-2xl bg-green-50 border border-green-200 px-4 py-3">
-      {/* Top row: label + progress badge */}
+      {/* Top row */}
       <div className="flex items-center justify-between gap-2 mb-2">
         <p className="text-[10px] font-bold uppercase tracking-widest text-green-600">
           Reisstatus
@@ -83,7 +79,7 @@ export function TripStatusCard() {
         </span>
       </div>
 
-      {/* Main row: emoji + info + CTA */}
+      {/* Main row */}
       <div className="flex items-center gap-3">
         {day && <span className="text-xl leading-none flex-shrink-0">{day.emoji}</span>}
 
@@ -114,7 +110,6 @@ export function TripStatusCard() {
           </div>
         </div>
 
-        {/* Bekijk vandaag */}
         {day && (
           <Link
             href={`/day/${day.date}`}
