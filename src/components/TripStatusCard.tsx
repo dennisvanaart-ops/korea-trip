@@ -1,10 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTripStateContext } from "@/lib/TripStateContext";
 import { tripDays } from "@/data/trip";
 import { getDayType } from "@/lib/tripHelpers";
 import { TRIP_START, TRIP_END } from "@/data/trip";
+import { TRIP_ROUTE, getActiveTripPoint } from "@/lib/tripSegments";
+import { useWeather } from "@/lib/useWeather";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function fmt(iso: string) {
   return new Date(`${iso}T12:00:00`).toLocaleDateString("nl-NL", {
@@ -13,6 +18,38 @@ function fmt(iso: string) {
     year: "numeric",
   });
 }
+
+/**
+ * WeatherWidget — reads activeDayIndex from context, debounces it (800 ms),
+ * derives the geo-location from the trip route, and fetches weather.
+ *
+ * Debounce prevents a fetch on every wheel snap during fast scroll.
+ * The cache in useWeather suppresses redundant network calls.
+ */
+function WeatherWidget() {
+  const { activeDayIndex } = useTripStateContext();
+
+  // Debounce: only update the location after the user has paused scrolling
+  const [debouncedIdx, setDebouncedIdx] = useState(activeDayIndex);
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedIdx(activeDayIndex), 800);
+    return () => clearTimeout(t);
+  }, [activeDayIndex]);
+
+  const activePoint = getActiveTripPoint(TRIP_ROUTE.points, debouncedIdx);
+  const weather = useWeather(activePoint?.lat ?? null, activePoint?.lng ?? null);
+
+  if (!weather) return null;
+
+  return (
+    <span className="flex items-center gap-0.5 text-[11px] text-gray-500 tabular-nums">
+      <span className="leading-none">{weather.icon}</span>
+      <span className="font-medium">{weather.temp}°</span>
+    </span>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 
 export function TripStatusCard() {
   const { progress } = useTripStateContext();
@@ -39,7 +76,10 @@ export function TripStatusCard() {
             </p>
             <p className="text-xs text-gray-500 mt-0.5 capitalize">{start}</p>
           </div>
-          <span className="text-2xl">✈️</span>
+          <div className="flex flex-col items-end gap-1">
+            <WeatherWidget />
+            <span className="text-2xl leading-none">✈️</span>
+          </div>
         </div>
       </div>
     );
@@ -74,9 +114,13 @@ export function TripStatusCard() {
         <p className="text-[10px] font-bold uppercase tracking-widest text-green-600">
           Reisstatus
         </p>
-        <span className="text-[11px] font-semibold text-green-700 bg-green-100 rounded-full px-2 py-0.5">
-          Dag {progress.currentDayNumber} / {progress.totalDays}
-        </span>
+        <div className="flex items-center gap-2">
+          {/* Weather for the scrolled active day */}
+          <WeatherWidget />
+          <span className="text-[11px] font-semibold text-green-700 bg-green-100 rounded-full px-2 py-0.5">
+            Dag {progress.currentDayNumber} / {progress.totalDays}
+          </span>
+        </div>
       </div>
 
       {/* Main row */}

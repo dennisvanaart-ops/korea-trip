@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TripDayWheel } from "./TripDayWheel";
 import { TripTimeline } from "./TripTimeline";
 import { RouteMapPreview } from "./RouteMapPreview";
@@ -12,32 +12,29 @@ import type { SourceView } from "@/lib/navigationState";
 /**
  * Main navigation panel.
  *
- * Layout (top to bottom, always visible):
+ * activeDayIndex and setActiveDayIndex come from TripStateContext
+ * (managed by TripOverview) so TripStatusCard can also read them.
+ *
+ * Layout (top to bottom):
  *   ┌──────────────────────────────────────┐
- *   │  "Dagplanning"   [Rol | Lijst]       │  ← view toggle
- *   │  "Route"                             │
- *   │  RouteMapPreview (clickable → modal) │  ← visible in both views
+ *   │  "Dagplanning"   [Rol | Lijst]       │
+ *   │  RouteMapPreview (clickable → modal) │  hidden when modal is open
  *   ├──────────────────────────────────────┤
  *   │  flex-1 overflow-y-auto              │
  *   │    TripDayWheel  ──or──  TripTimeline│
  *   └──────────────────────────────────────┘
  */
 export function TripNavigation() {
-  const { progress, todayIndex, refreshKey } = useTripStateContext();
+  const {
+    progress,
+    todayIndex,
+    activeDayIndex,
+    setActiveDayIndex,
+  } = useTripStateContext();
+
   const [view, setView] = useState<SourceView>("wheel");
   const [hydrated, setHydrated] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
-
-  // Active day index — tracks which day is in focus in the scroll/wheel view.
-  // Resets to todayIndex whenever the trip state refreshes.
-  const [activeDayIndex, setActiveDayIndex] = useState(todayIndex);
-  const prevRefreshKey = useRef(refreshKey);
-  useEffect(() => {
-    if (refreshKey !== prevRefreshKey.current) {
-      prevRefreshKey.current = refreshKey;
-      setActiveDayIndex(todayIndex);
-    }
-  }, [refreshKey, todayIndex]);
 
   // Restore last-used view from sessionStorage
   useEffect(() => {
@@ -49,8 +46,8 @@ export function TripNavigation() {
   function switchView(v: SourceView) {
     setView(v);
     saveNavigationState({ sourceView: v });
-    // Reset active day to today when switching views
-    setActiveDayIndex(todayIndex);
+    // Jump back to today when the user switches views
+    setActiveDayIndex(Math.max(0, todayIndex));
   }
 
   return (
@@ -86,8 +83,7 @@ export function TripNavigation() {
           </div>
         </div>
 
-        {/* Route map — unmounted when modal is open so there is NEVER
-            more than one active Leaflet instance at the same time. */}
+        {/* Route map — unmounted when modal is open to avoid two Leaflet instances */}
         {!mapOpen && (
           <div className="px-4 pb-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
