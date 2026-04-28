@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { TripDay } from "@/data/trip";
+import { getDayType } from "@/lib/tripHelpers";
 
 interface Props {
   day: TripDay;
@@ -15,6 +16,17 @@ export function DayCard({ day, isToday = false, onNavigate }: Props) {
   const weekday = dateObj.toLocaleDateString("nl-NL", { weekday: "short" });
   const dayNum = dateObj.getDate();
   const month = dateObj.toLocaleDateString("nl-NL", { month: "short" });
+
+  const dayType = getDayType(day);
+  // Derive type badge properties
+  const typeBadge: { label: string; className: string } | null =
+    dayType === "Reisdag"
+      ? { label: "Reisdag", className: "bg-amber-50 text-amber-700 border border-amber-200" }
+      : dayType === "Vlucht"
+      ? { label: "Vlucht", className: "bg-sky-50 text-sky-700 border border-sky-200" }
+      : dayType === "Transfer"
+      ? { label: "Transfer", className: "bg-purple-50 text-purple-700 border border-purple-200" }
+      : null; // Verblijf — no badge needed, it's the default
 
   return (
     <Link
@@ -67,24 +79,34 @@ export function DayCard({ day, isToday = false, onNavigate }: Props) {
               {day.title}
             </p>
           </div>
+          {/* Location / route line */}
           <p className="text-sm text-gray-500 mt-0.5">{day.location}</p>
-          {day.description && (
+
+          {/* Short description (only when there's no long content) */}
+          {day.description && !day.activities?.length && (
             <p className="text-sm text-gray-600 mt-1 line-clamp-2">{day.description}</p>
           )}
+
+          {/* Travel time for driving days */}
+          {day.travelTime && (
+            <p className="text-xs text-gray-400 mt-0.5">🚗 {day.travelTime}</p>
+          )}
+
+          {/* Badges */}
           <div className="flex flex-wrap gap-1 mt-2">
             {isToday && (
               <span className="rounded-full bg-green-200 px-2 py-0.5 text-xs font-medium text-green-800">
                 Vandaag
               </span>
             )}
-            {day.hotel && (
-              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                Hotel
+            {typeBadge && (
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${typeBadge.className}`}>
+                {typeBadge.label}
               </span>
             )}
-            {day.transport && day.transport.length > 0 && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-                Vervoer
+            {day.hotel && (
+              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 border border-gray-200">
+                Verblijf
               </span>
             )}
             {day.activities && day.activities.length > 0 && (
