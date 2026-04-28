@@ -21,3 +21,56 @@ body {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ─── Leaflet overrides ───────────────────────────────────────────────────── */
+
+/* Remove Leaflet's default tooltip triangle arrow */
+.leaflet-tooltip::before,
+.leaflet-tooltip-left::before,
+.leaflet-tooltip-right::before,
+.leaflet-tooltip-top::before,
+.leaflet-tooltip-bottom::before {
+  display: none !important;
+}
+
+/* Wrapper resets Leaflet's default styles */
+.tw-tooltip-wrap {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Korea city label */
+.tw-label {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+/* Active day label */
+.tw-label-active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
+  font-weight: 600;
+  padding: 3px 8px;
+}
+
+/* International city label (Amsterdam, Beijing) */
+.tw-label-intl {
+  opacity: 0.75;
+  font-size: 9px;
+}
+
+/* Leaflet container font */
+.leaflet-container {
+  font-family: inherit;
+}
