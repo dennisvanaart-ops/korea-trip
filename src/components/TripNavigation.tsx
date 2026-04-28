@@ -86,17 +86,20 @@ export function TripNavigation() {
           </div>
         </div>
 
-        {/* Route map — always above both views, whole map is clickable */}
-        <div className="px-4 pb-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
-            Route
-          </p>
-          <RouteMapPreview
-            status={progress.status}
-            activeDayIndex={activeDayIndex}
-            onMapClick={() => setMapOpen(true)}
-          />
-        </div>
+        {/* Route map — unmounted when modal is open so there is NEVER
+            more than one active Leaflet instance at the same time. */}
+        {!mapOpen && (
+          <div className="px-4 pb-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
+              Route
+            </p>
+            <RouteMapPreview
+              status={progress.status}
+              activeDayIndex={activeDayIndex}
+              onMapClick={() => setMapOpen(true)}
+            />
+          </div>
+        )}
 
       </div>
 

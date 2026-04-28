@@ -3,16 +3,18 @@
 /**
  * TripMapInner — actual Leaflet implementation.
  *
- * IMPORTANT: This file is never imported directly. Use TripMap.tsx, which
- * wraps this with next/dynamic { ssr: false } to avoid Leaflet's window access
- * during server rendering.
+ * IMPORTANT: Import via TripMap.tsx (next/dynamic ssr:false), not directly.
  *
  * Two-effect pattern:
- *  1. Init effect (runs once): async-imports Leaflet, creates the map,
- *     draws tiles + initial route layers, fits bounds.
- *  2. Update effect (runs on activeDayIndex change): redraws only the
- *     route layers (markers + polylines) without recreating the base map.
- *     This keeps tile caching intact and avoids jank.
+ *  1. Init effect (once per mount): imports Leaflet, creates map + tiles,
+ *     draws initial layers, fits bounds, calls invalidateSize().
+ *  2. Update effect (on activeDayIndex change): redraws only route layers
+ *     and refits bounds for the active day — no map recreation.
+ *
+ * Bounds are computed dynamically:
+ *  - Compact / travel day:   departure point + destination point
+ *  - Compact / staying day:  current point + next upcoming point
+ *  - Fullscreen:             all route points
  */
 
 import { useEffect, useRef } from "react";
@@ -23,21 +25,83 @@ export interface TripMapProps {
   points: TripPoint[];
   segments: TripSegment[];
   activeDayIndex: number;
-  /** true = compact preview (disabled interactions, Korea-only bounds) */
+  /** true = compact preview (disabled interactions, dynamic day bounds) */
   compact?: boolean;
   /** Called when user taps the compact map — opens fullscreen */
   onExpand?: () => void;
 }
 
-// ─── Layer drawing ─────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function isKorea(p: TripPoint) {
   return p.lat >= 33 && p.lat <= 40 && p.lng >= 124 && p.lng <= 132;
 }
 
+/**
+ * Compute the viewport bounds for a given active day.
+ *
+ * Compact mode (preview):
+ *  – Travel day (first day at this point): show fromPoint + toPoint (the segment)
+ *  – Staying day (mid-stay): show current + next point ("what's coming")
+ *  – Single point only: create a fixed-size bounding box around it
+ *
+ * Full mode: always show all route points.
+ */
+function computeBoundsForDay(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  L: any,
+  points: TripPoint[],
+  activeDayIndex: number,
+  compact: boolean,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any | null {
+  if (points.length === 0) return null;
+
+  if (!compact) {
+    return L.latLngBounds(points.map((p) => [p.lat, p.lng]));
+  }
+
+  // ── Compact: day-aware bounds ──────────────────────────────────────────────
+  const activePoint = getActiveTripPoint(points, activeDayIndex);
+  if (!activePoint) {
+    // Fallback: Korea points, or all points
+    const ko = points.filter(isKorea);
+    return L.latLngBounds((ko.length > 0 ? ko : points).map((p) => [p.lat, p.lng]));
+  }
+
+  const activeIdx = points.findIndex((p) => p.id === activePoint.id);
+  const candidates: TripPoint[] = [activePoint];
+
+  const isTravelDay = activePoint.firstDayIndex === activeDayIndex;
+
+  if (isTravelDay && activeIdx > 0) {
+    // Show the segment we just traveled: prev point → active point
+    candidates.push(points[activeIdx - 1]);
+  } else {
+    // Staying here — show next stop as forward context
+    if (activeIdx < points.length - 1) {
+      candidates.push(points[activeIdx + 1]);
+    }
+  }
+
+  if (candidates.length === 1) {
+    const p = candidates[0];
+    return L.latLngBounds(
+      [p.lat - 0.8, p.lng - 0.8],
+      [p.lat + 0.8, p.lng + 0.8],
+    );
+  }
+
+  return L.latLngBounds(candidates.map((p) => [p.lat, p.lng]));
+}
+
+// ─── Route layer drawing ──────────────────────────────────────────────────────
+
 function drawRouteLayers(
-  L: typeof import("leaflet"),
-  group: import("leaflet").LayerGroup,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  L: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  group: any,
   points: TripPoint[],
   segments: TripSegment[],
   activeDayIndex: number,
@@ -54,8 +118,7 @@ function drawRouteLayers(
     if (!from || !to) continue;
 
     const isFlight = seg.type === "flight";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (L as any).polyline([[from.lat, from.lng], [to.lat, to.lng]], {
+    L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {
       color: isFlight ? "#818cf8" : "#22c55e",
       weight: compact ? 1.5 : 2.5,
       opacity: 0.85,
@@ -64,8 +127,7 @@ function drawRouteLayers(
     }).addTo(group);
   }
 
-  // ── Markers ───────────────────────────────────────────────────────────────
-  // Draw non-active first so active marker renders on top
+  // ── Markers (non-active first so active renders on top) ───────────────────
   const ordered = [...points].sort((a, b) =>
     a.id === activePoint?.id ? 1 : b.id === activePoint?.id ? -1 : 0,
   );
@@ -79,8 +141,7 @@ function drawRouteLayers(
     const fillOpacity = isActive ? 1 : isKR ? 0.9 : 0.55;
     const weight = isActive ? 2.5 : 1.5;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const marker = (L as any).circleMarker([p.lat, p.lng], {
+    const marker = L.circleMarker([p.lat, p.lng], {
       radius,
       color: "white",
       weight,
@@ -127,25 +188,26 @@ export function TripMapInner({
 }: TripMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Refs shared between the two effects
-  const mapRef = useRef<import("leaflet").Map | null>(null);
+  // Refs shared between effects
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const LRef = useRef<typeof import("leaflet") | null>(null);
+  const mapRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const groupRef = useRef<import("leaflet").LayerGroup | null>(null);
+  const LRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const groupRef = useRef<any>(null);
 
-  // Always-current view of activeDayIndex (avoids stale closure in init async)
+  // Always-current activeDayIndex — prevents stale closure in async init
   const activeDayRef = useRef(activeDayIndex);
   useEffect(() => { activeDayRef.current = activeDayIndex; }, [activeDayIndex]);
 
-  // ── Init effect (runs once per mount) ─────────────────────────────────────
+  // ── Init effect (once per mount) ──────────────────────────────────────────
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
+    let sizeTimer: ReturnType<typeof setTimeout>;
 
     (async () => {
-      // Dynamically import Leaflet — only runs in the browser
-      const L = (await import("leaflet")).default as typeof import("leaflet");
+      const L = (await import("leaflet")).default;
       if (cancelled || !containerRef.current) return;
 
       LRef.current = L;
@@ -163,13 +225,11 @@ export function TripMapInner({
 
       mapRef.current = map;
 
-      // Tile layer
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 18,
         opacity: compact ? 0.88 : 0.92,
       }).addTo(map);
 
-      // Attribution (fullscreen only)
       if (!compact) {
         L.control
           .attribution({ prefix: false, position: "bottomright" })
@@ -177,24 +237,26 @@ export function TripMapInner({
           .addTo(map);
       }
 
-      // Route layer group
       const group = L.layerGroup().addTo(map);
       groupRef.current = group;
 
-      // Draw initial route with the current (possibly stale) activeDayIndex
       drawRouteLayers(L, group, points, segments, activeDayRef.current, compact);
 
-      // Fit bounds
-      const boundPts = compact ? points.filter(isKorea) : points;
-      const usedPts = boundPts.length > 0 ? boundPts : points;
-      if (usedPts.length > 0) {
-        const bounds = L.latLngBounds(usedPts.map((p) => [p.lat, p.lng] as [number, number]));
-        map.fitBounds(bounds.pad(0.18), { animate: false });
+      // Initial bounds for the current active day
+      const bounds = computeBoundsForDay(L, points, activeDayRef.current, compact);
+      if (bounds) {
+        map.fitBounds(bounds.pad(0.22), { animate: false, maxZoom: compact ? 10 : 14 });
       }
+
+      // Safety: let the layout settle, then invalidate Leaflet's size cache
+      sizeTimer = setTimeout(() => {
+        if (!cancelled && mapRef.current) mapRef.current.invalidateSize();
+      }, 150);
     })();
 
     return () => {
       cancelled = true;
+      clearTimeout(sizeTimer);
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -203,12 +265,22 @@ export function TripMapInner({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [compact]); // Only re-init when compact mode changes
+  }, [compact]); // only re-init on mode change; points/segments are stable
 
-  // ── Update effect (runs on activeDayIndex change) ─────────────────────────
+  // ── Update effect (on activeDayIndex change) ──────────────────────────────
   useEffect(() => {
     if (!LRef.current || !mapRef.current || !groupRef.current) return;
+
     drawRouteLayers(LRef.current, groupRef.current, points, segments, activeDayIndex, compact);
+
+    // Refit viewport for the new active day
+    const bounds = computeBoundsForDay(LRef.current, points, activeDayIndex, compact);
+    if (bounds) {
+      mapRef.current.fitBounds(bounds.pad(0.22), {
+        animate: false, // instant — prevents jank during scroll
+        maxZoom: compact ? 10 : 14,
+      });
+    }
   }, [activeDayIndex, points, segments, compact]);
 
   return (
@@ -216,7 +288,8 @@ export function TripMapInner({
       {/* Leaflet attaches to this div */}
       <div ref={containerRef} className="absolute inset-0" />
 
-      {/* Compact overlay: intercepts all pointer events → opens fullscreen */}
+      {/* Compact overlay: intercepts all pointer events → opens fullscreen.
+          This prevents scroll-hijack by Leaflet on mobile. */}
       {compact && (
         <div
           className="absolute inset-0 z-[800] touch-none"
@@ -233,10 +306,7 @@ export function TripMapInner({
       {compact && onExpand && (
         <div
           className="absolute bottom-2 right-2 z-[801] flex items-center gap-1 rounded pointer-events-none"
-          style={{
-            background: "rgba(0,0,0,0.42)",
-            padding: "2px 7px",
-          }}
+          style={{ background: "rgba(0,0,0,0.42)", padding: "2px 7px" }}
         >
           <svg width="9" height="9" viewBox="0 0 16 16" fill="none">
             <path
