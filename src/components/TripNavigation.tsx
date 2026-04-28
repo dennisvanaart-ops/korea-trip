@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TripDayWheel } from "./TripDayWheel";
 import { TripTimeline } from "./TripTimeline";
 import { RouteMapPreview } from "./RouteMapPreview";
@@ -15,18 +15,29 @@ import type { SourceView } from "@/lib/navigationState";
  * Layout (top to bottom, always visible):
  *   ┌──────────────────────────────────────┐
  *   │  "Dagplanning"   [Rol | Lijst]       │  ← view toggle
- *   │  "Route"         [Volledige kaart →] │
- *   │  RouteMapPreview (shared map)        │  ← visible in both views
+ *   │  "Route"                             │
+ *   │  RouteMapPreview (clickable → modal) │  ← visible in both views
  *   ├──────────────────────────────────────┤
  *   │  flex-1 overflow-y-auto              │
  *   │    TripDayWheel  ──or──  TripTimeline│
  *   └──────────────────────────────────────┘
  */
 export function TripNavigation() {
-  const { progress, todayIndex } = useTripStateContext();
+  const { progress, todayIndex, refreshKey } = useTripStateContext();
   const [view, setView] = useState<SourceView>("wheel");
   const [hydrated, setHydrated] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
+
+  // Active day index — tracks which day is in focus in the scroll/wheel view.
+  // Resets to todayIndex whenever the trip state refreshes.
+  const [activeDayIndex, setActiveDayIndex] = useState(todayIndex);
+  const prevRefreshKey = useRef(refreshKey);
+  useEffect(() => {
+    if (refreshKey !== prevRefreshKey.current) {
+      prevRefreshKey.current = refreshKey;
+      setActiveDayIndex(todayIndex);
+    }
+  }, [refreshKey, todayIndex]);
 
   // Restore last-used view from sessionStorage
   useEffect(() => {
@@ -38,6 +49,8 @@ export function TripNavigation() {
   function switchView(v: SourceView) {
     setView(v);
     saveNavigationState({ sourceView: v });
+    // Reset active day to today when switching views
+    setActiveDayIndex(todayIndex);
   }
 
   return (
@@ -73,22 +86,15 @@ export function TripNavigation() {
           </div>
         </div>
 
-        {/* Route map — always above both views */}
+        {/* Route map — always above both views, whole map is clickable */}
         <div className="px-4 pb-2">
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              Route
-            </p>
-            <button
-              onClick={() => setMapOpen(true)}
-              className="text-xs font-medium text-blue-600 active:opacity-70"
-            >
-              Volledige kaart →
-            </button>
-          </div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
+            Route
+          </p>
           <RouteMapPreview
             status={progress.status}
-            currentDayIndex={todayIndex}
+            activeDayIndex={activeDayIndex}
+            onMapClick={() => setMapOpen(true)}
           />
         </div>
 
@@ -96,14 +102,18 @@ export function TripNavigation() {
 
       {/* ── Scrollable day content ─────────────────────────────────────────── */}
       <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-        {hydrated && (view === "wheel" ? <TripDayWheel /> : <TripTimeline />)}
+        {hydrated && (
+          view === "wheel"
+            ? <TripDayWheel onFocusChange={setActiveDayIndex} />
+            : <TripTimeline onActiveDayChange={setActiveDayIndex} />
+        )}
       </div>
 
       {/* ── Full-screen map modal ─────────────────────────────────────────── */}
       {mapOpen && (
         <MapFullscreen
           status={progress.status}
-          currentDayIndex={todayIndex}
+          currentDayIndex={activeDayIndex}
           onClose={() => setMapOpen(false)}
         />
       )}

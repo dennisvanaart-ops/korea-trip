@@ -160,7 +160,12 @@ function WheelCard({
   );
 }
 
-export function TripDayWheel() {
+interface TripDayWheelProps {
+  /** Called when focused day changes — use to sync map highlight */
+  onFocusChange?: (dayIndex: number) => void;
+}
+
+export function TripDayWheel({ onFocusChange }: TripDayWheelProps) {
   const today = getToday();
   const progress = useMemo(() => getTripProgress(today, tripDays), [today]);
 
@@ -179,6 +184,10 @@ export function TripDayWheel() {
 
   const outerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Stable ref so the scroll handler never captures a stale onFocusChange
+  const onFocusChangeRef = useRef(onFocusChange);
+  useEffect(() => { onFocusChangeRef.current = onFocusChange; }, [onFocusChange]);
 
   // spacerH centres the focus card at ~47% of the container height
   // (slightly above center feels more natural on a phone)
@@ -204,6 +213,7 @@ export function TripDayWheel() {
     if (!el || spacerH === 0) return;
     el.scrollTop = initialIndex * STRIDE;
     setActiveIndex(initialIndex);
+    onFocusChangeRef.current?.(initialIndex);
   }, [initialIndex, spacerH]);
 
   useEffect(() => {
@@ -214,8 +224,9 @@ export function TripDayWheel() {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         if (!el) return;
-        const idx = Math.round(el.scrollTop / STRIDE);
-        setActiveIndex(Math.max(0, Math.min(tripDays.length - 1, idx)));
+        const idx = Math.max(0, Math.min(tripDays.length - 1, Math.round(el.scrollTop / STRIDE)));
+        setActiveIndex(idx);
+        onFocusChangeRef.current?.(idx);
       });
     }
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -230,6 +241,7 @@ export function TripDayWheel() {
     if (!el) return;
     el.scrollTo({ top: initialIndex * STRIDE, behavior: "smooth" });
     setActiveIndex(initialIndex);
+    onFocusChangeRef.current?.(initialIndex);
   }
 
   const showTodayButton =

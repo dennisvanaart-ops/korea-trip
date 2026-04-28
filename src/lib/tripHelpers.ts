@@ -1,26 +1,23 @@
 /**
  * Domain helpers for the Korea trip app.
  *
- * Covers:
- *  - getDayType          — Vlucht / Reisdag / Transfer / Verblijf
- *  - getTransitionBetweenDays — connector between consecutive day cards
- *  - ROUTE_POINTS        — named Korean cities with lat/lng + day ranges
- *  - getVisibleRoutePoints — progress-aware filter for the route map
- *  - CITY_COORDS         — coordinates for routing URLs
+ *  - getDayType                  — Vlucht / Reisdag / Transfer / Verblijf
+ *  - getTransitionBetweenDays    — connector between consecutive day cards
+ *  - buildRoutePointsFromTrip    — derive route stops from trip data (hotels + flights)
+ *  - ROUTE_POINTS                — Korea stops (computed from trip data, not hardcoded)
+ *  - lngLatToMapPx               — geographic → OSM-tile pixel coordinate
+ *  - getVisibleRoutePoints       — progress+activeDay-aware filter for the map
+ *  - CITY_COORDS / buildRouteLinks — navigation URL helpers
  */
 
 import type { TripDay } from "@/data/trip";
+import { tripDays } from "@/data/trip";
 import type { TripStatus } from "@/lib/tripProgress";
 
 // ─── Day type ─────────────────────────────────────────────────────────────────
 
 export type DayType = "Vlucht" | "Reisdag" | "Transfer" | "Verblijf";
 
-/**
- * Derive a simple day-type label from a TripDay.
- *
- * Priority: flight > drive (travelTime) > transfer > verblijf
- */
 export function getDayType(day: TripDay): DayType {
   if (day.transport?.some((t) => t.type === "flight")) return "Vlucht";
   if (day.travelTime) return "Reisdag";
@@ -36,15 +33,11 @@ export interface Transition {
   kind: TransportKind;
   icon: string;
   label: string;
-  /** "City A, Zuid-Korea" — only for drive */
   origin?: string;
-  /** "City B, Zuid-Korea" — only for drive */
   destination?: string;
-  /** Driving duration string (e.g. "± 2,5–3 uur") */
   duration?: string;
 }
 
-/** Parse "Seoul → Sokcho" → { origin, destination } */
 function parseRouteLocation(location: string): { origin: string; destination: string } | null {
   const idx = location.indexOf("→");
   if (idx === -1) return null;
@@ -54,23 +47,9 @@ function parseRouteLocation(location: string): { origin: string; destination: st
   };
 }
 
-/**
- * Returns a Transition descriptor for the gap between dayA and dayB, or null
- * if the transition is not worth showing (same location / overnight / etc).
- *
- * Only two cases are shown:
- *  - Drive:  dayB.travelTime is set (car journey between cities)
- *  - Flight: dayB has flight transport but no travelTime (transition flight day)
- */
-export function getTransitionBetweenDays(
-  dayA: TripDay,
-  dayB: TripDay,
-): Transition | null {
-  // Suppress the transition if dayA itself was already a flight day — the
-  // flight info is already visible in the dayA card.
+export function getTransitionBetweenDays(dayA: TripDay, dayB: TripDay): Transition | null {
   const dayAisFlight = dayA.transport?.some((t) => t.type === "flight") ?? false;
 
-  // ── Drive transition ─────────────────────────────────────────────────────
   if (dayB.travelTime) {
     const route = parseRouteLocation(dayB.location);
     return {
@@ -83,97 +62,191 @@ export function getTransitionBetweenDays(
     };
   }
 
-  // ── Flight transition ────────────────────────────────────────────────────
   if (!dayAisFlight && dayB.transport?.some((t) => t.type === "flight")) {
     const flight = dayB.transport.find((t) => t.type === "flight")?.flight;
     return {
       kind: "flight",
       icon: "✈️",
-      label: flight ? `${flight.duration} · ${flight.from.city} → ${flight.to.city}` : "Vlucht",
+      label: flight
+        ? `${flight.duration} · ${flight.from.city} → ${flight.to.city}`
+        : "Vlucht",
     };
   }
 
   return null;
 }
 
-// ─── Route points for the map ─────────────────────────────────────────────────
+// ─── Route points ─────────────────────────────────────────────────────────────
 
 export interface RoutePoint {
   id: string;
   name: string;
   lat: number;
   lng: number;
-  /** Human-readable day range, e.g. "Dag 2–4" */
   dayLabel: string;
-  /** Index of the first tripDay that "lives" at this location (0-based) */
   firstDayIndex: number;
-  /** Index of the last tripDay at this location (inclusive) */
   lastDayIndex: number;
 }
 
+/** Known coordinates for cities that appear in the trip */
+const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
+  Amsterdam: { lat: 52.3676, lng: 4.9041 },
+  Beijing: { lat: 39.9042, lng: 116.4074 },
+  Seoul: { lat: 37.5665, lng: 126.978 },
+  Sokcho: { lat: 38.2078, lng: 128.5918 },
+  Andong: { lat: 36.5684, lng: 128.7294 },
+  Busan: { lat: 35.1796, lng: 129.0756 },
+  Jeonju: { lat: 35.8242, lng: 127.148 },
+};
+
+function findCoords(text: string): { lat: number; lng: number } | null {
+  for (const [city, c] of Object.entries(KNOWN_COORDS)) {
+    if (text.toLowerCase().includes(city.toLowerCase())) return c;
+  }
+  return null;
+}
+
+function findCityName(text: string): string | null {
+  for (const city of Object.keys(KNOWN_COORDS)) {
+    if (text.toLowerCase().includes(city.toLowerCase())) return city;
+  }
+  return null;
+}
+
+function dayRangeLabel(first: number, last: number): string {
+  return first === last ? `Dag ${first + 1}` : `Dag ${first + 1}–${last + 1}`;
+}
+
 /**
- * Fixed route through Korea — only Korean cities.
- * Day 0 (Amsterdam → Beijing) and Day 1 (Beijing → Seoul) are transit
- * and are NOT shown as separate route points.
+ * Derive route stops from the trip planning data.
  *
- * Route: Seoul → Sokcho → Andong → Busan → Jeonju → Seoul
+ * Sources (in order):
+ *  1. Departure city from first flight on day 0
+ *  2. Transit stop from first flight on day 1 (when it departs from a different city than the hotel)
+ *  3. Korean hotel stops, grouped by hotel ID
+ *  4. Return destination from last flight on last day
  */
-export const ROUTE_POINTS: RoutePoint[] = [
-  {
-    id: "seoul-1",
-    name: "Seoul",
-    lat: 37.5665,
-    lng: 126.978,
-    dayLabel: "Dag 2–4",
-    firstDayIndex: 1,  // day 2: Aankomst Seoul
-    lastDayIndex: 4,   // day 5 starts in Seoul (car pickup) → include
-  },
-  {
-    id: "sokcho",
-    name: "Sokcho",
-    lat: 38.2078,
-    lng: 128.5918,
-    dayLabel: "Dag 5–7",
-    firstDayIndex: 4,
-    lastDayIndex: 6,
-  },
-  {
-    id: "andong",
-    name: "Andong",
-    lat: 36.5684,
-    lng: 128.7294,
-    dayLabel: "Dag 8",
-    firstDayIndex: 7,
-    lastDayIndex: 7,
-  },
-  {
-    id: "busan",
-    name: "Busan",
-    lat: 35.1796,
-    lng: 129.0756,
-    dayLabel: "Dag 9–10",
-    firstDayIndex: 8,
-    lastDayIndex: 9,
-  },
-  {
-    id: "jeonju",
-    name: "Jeonju",
-    lat: 35.8242,
-    lng: 127.148,
-    dayLabel: "Dag 11–12",
-    firstDayIndex: 10,
-    lastDayIndex: 11,
-  },
-  {
-    id: "seoul-2",
-    name: "Seoul",
-    lat: 37.5665,
-    lng: 126.978,
-    dayLabel: "Dag 13–15",
-    firstDayIndex: 12,
-    lastDayIndex: 14,
-  },
-];
+export function buildRoutePointsFromTrip(days: TripDay[]): RoutePoint[] {
+  const result: RoutePoint[] = [];
+
+  // 1. Departure city
+  const day0 = days[0];
+  const depFlight = day0?.transport?.find((t) => t.type === "flight")?.flight;
+  if (depFlight) {
+    const city = depFlight.from.city;
+    const coords = findCoords(city) ?? { lat: 0, lng: 0 };
+    result.push({
+      id: `dep-${city.toLowerCase()}`,
+      name: city,
+      ...coords,
+      dayLabel: dayRangeLabel(0, 0),
+      firstDayIndex: 0,
+      lastDayIndex: 0,
+    });
+  }
+
+  // 2. Transit stop (e.g. Beijing layover)
+  const day1 = days[1];
+  const transitFlight = day1?.transport?.find((t) => t.type === "flight")?.flight;
+  if (transitFlight && transitFlight.from.city !== depFlight?.from.city) {
+    const city = transitFlight.from.city;
+    const coords = findCoords(city) ?? { lat: 0, lng: 0 };
+    const hotelCity = day1?.hotel ? findCityName(day1.hotel.address) : null;
+    if (!hotelCity || hotelCity !== city) {
+      result.push({
+        id: `transit-${city.toLowerCase()}`,
+        name: city,
+        ...coords,
+        dayLabel: dayRangeLabel(1, 1),
+        firstDayIndex: 1,
+        lastDayIndex: 1,
+      });
+    }
+  }
+
+  // 3. Hotel-based Korea stops
+  let i = 0;
+  while (i < days.length) {
+    const day = days[i];
+    if (!day.hotel) { i++; continue; }
+
+    const hotelId = day.hotel.id;
+    const address = day.hotel.address;
+    const city = findCityName(address) ?? address.split(",")[0].trim();
+    const coords = findCoords(address) ?? { lat: 0, lng: 0 };
+
+    // Group consecutive days with the same hotel
+    let j = i;
+    while (j < days.length && days[j].hotel?.id === hotelId) j++;
+    const lastIdx = j - 1;
+
+    // Skip if this day range already covered by a transit/departure entry
+    const covered = result.some((r) => r.firstDayIndex <= i && r.lastDayIndex >= i);
+    if (!covered) {
+      result.push({
+        id: `hotel-${hotelId}`,
+        name: city,
+        ...coords,
+        dayLabel: dayRangeLabel(i, lastIdx),
+        firstDayIndex: i,
+        lastDayIndex: lastIdx,
+      });
+    }
+    i = j;
+  }
+
+  // 4. Return destination
+  const lastDay = days[days.length - 1];
+  const returnFlights = lastDay?.transport?.filter((t) => t.type === "flight") ?? [];
+  const lastFlight = returnFlights[returnFlights.length - 1]?.flight;
+  if (lastFlight) {
+    const city = lastFlight.to.city;
+    const coords = findCoords(city) ?? { lat: 0, lng: 0 };
+    const idx = days.length - 1;
+    result.push({
+      id: `arr-${city.toLowerCase()}`,
+      name: city,
+      ...coords,
+      dayLabel: dayRangeLabel(idx, idx),
+      firstDayIndex: idx,
+      lastDayIndex: idx,
+    });
+  }
+
+  return result.sort((a, b) => a.firstDayIndex - b.firstDayIndex);
+}
+
+/** All stops including international (Amsterdam, Beijing) */
+export const ALL_ROUTE_POINTS: RoutePoint[] = buildRoutePointsFromTrip(tripDays);
+
+/**
+ * Korea-only stops — visible on the Korea OSM tile map.
+ * Automatically derived from hotel data; no manual maintenance needed.
+ */
+export const ROUTE_POINTS: RoutePoint[] = ALL_ROUTE_POINTS.filter(
+  (rp) => rp.lat >= 33 && rp.lat <= 40 && rp.lng >= 124 && rp.lng <= 131,
+);
+
+// ─── Map pixel projection ─────────────────────────────────────────────────────
+
+/**
+ * Convert lat/lng to pixel coordinates on the Korea tile map.
+ *
+ * Map spec: zoom=6, tile grid x=[54,55], y=[24,25] → 512×512px JPEG.
+ * Returns pixel position within the image. Values outside [0,512] are
+ * off-screen and should not be rendered.
+ */
+export function lngLatToMapPx(lat: number, lng: number): { x: number; y: number } {
+  const n = 64; // 2^6
+  const x = (lng + 180) / 360 * n * 256 - 54 * 256;
+  const lr = (lat * Math.PI) / 180;
+  const y =
+    (1 - Math.log(Math.tan(lr) + 1 / Math.cos(lr)) / Math.PI) / 2 * n * 256 -
+    24 * 256;
+  return { x, y };
+}
+
+// ─── Visible route points ─────────────────────────────────────────────────────
 
 export interface VisibleRoutePoint extends RoutePoint {
   isCurrent: boolean;
@@ -181,42 +254,40 @@ export interface VisibleRoutePoint extends RoutePoint {
 }
 
 /**
- * Returns the subset of ROUTE_POINTS that should be rendered on the map.
+ * Filter ROUTE_POINTS for map rendering.
  *
- * - upcoming/past → all points (full route)
- * - active:
- *     · Find which point the currentDayIndex falls within.
- *     · Hide points that are 2+ steps behind (return null for them).
- *     · Show 1 step behind as faded.
- *     · Show current + future as normal.
+ * status "upcoming" / "past" → all points, none highlighted
+ * status "active":
+ *   – Finds which route point contains `activeDayIndex`
+ *   – Points 2+ steps behind are hidden
+ *   – 1 step behind → faded
+ *   – Current → green highlight
+ *   – Future → normal blue
  */
 export function getVisibleRoutePoints(
   status: TripStatus,
-  currentDayIndex: number,
+  activeDayIndex: number,
+  routePoints: RoutePoint[] = ROUTE_POINTS,
 ): VisibleRoutePoint[] {
   if (status !== "active") {
-    return ROUTE_POINTS.map((rp) => ({ ...rp, isCurrent: false, isFaded: false }));
+    return routePoints.map((rp) => ({ ...rp, isCurrent: false, isFaded: false }));
   }
 
-  // Find the route-point index that contains currentDayIndex.
-  let currentPointIdx = ROUTE_POINTS.findIndex(
-    (rp) => currentDayIndex >= rp.firstDayIndex && currentDayIndex <= rp.lastDayIndex,
+  let currentIdx = routePoints.findIndex(
+    (rp) => activeDayIndex >= rp.firstDayIndex && activeDayIndex <= rp.lastDayIndex,
   );
-  // Day 0 (Amsterdam flight) falls before first route point — treat as idx 0.
-  if (currentPointIdx === -1) {
-    currentPointIdx = currentDayIndex === 0 ? 0 : ROUTE_POINTS.length - 1;
-  }
 
-  return ROUTE_POINTS.flatMap((rp, i): VisibleRoutePoint[] => {
-    const stepsBehind = currentPointIdx - i;
-    if (stepsBehind >= 2) return []; // hidden
-    return [
-      {
-        ...rp,
-        isCurrent: i === currentPointIdx,
-        isFaded: stepsBehind === 1,
-      },
-    ];
+  // Flight/transit days before first Korea stop → show first stop as destination
+  if (currentIdx === -1 && activeDayIndex < (routePoints[0]?.firstDayIndex ?? 0)) {
+    currentIdx = 0;
+  }
+  // Post-trip → last stop
+  if (currentIdx === -1) currentIdx = routePoints.length - 1;
+
+  return routePoints.flatMap((rp, i): VisibleRoutePoint[] => {
+    const behind = currentIdx - i;
+    if (behind >= 2) return [];
+    return [{ ...rp, isCurrent: i === currentIdx, isFaded: behind === 1 }];
   });
 }
 
@@ -230,112 +301,32 @@ export const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   Jeonju: { lat: 35.8242, lng: 127.148 },
 };
 
-/** Look up coordinates by partial city name (case-insensitive). */
-export function getCityCoords(
-  city: string,
-): { lat: number; lng: number } | undefined {
+export function getCityCoords(city: string): { lat: number; lng: number } | undefined {
   const key = Object.keys(CITY_COORDS).find((k) =>
     city.toLowerCase().includes(k.toLowerCase()),
   );
   return key ? CITY_COORDS[key] : undefined;
 }
 
-// ─── Route navigation links ───────────────────────────────────────────────────
+export interface RouteLinks { google: string; naver: string; kakao: string }
 
-export interface RouteLinks {
-  google: string;
-  naver: string;
-  kakao: string;
-}
-
-/**
- * Build driving-direction links for a road trip between two Korean cities.
- * Falls back to destination search when coordinates are unavailable.
- */
-export function buildRouteLinks(
-  origin: string,
-  destination: string,
-): RouteLinks {
+export function buildRouteLinks(origin: string, destination: string): RouteLinks {
   const enc = encodeURIComponent;
-  const originCoords = getCityCoords(origin);
-  const destCoords = getCityCoords(destination);
+  const oC = getCityCoords(origin);
+  const dC = getCityCoords(destination);
 
-  // Google Maps directions
   const google =
     `https://www.google.com/maps/dir/?api=1` +
-    `&origin=${enc(origin)}` +
-    `&destination=${enc(destination)}` +
-    `&travelmode=driving`;
+    `&origin=${enc(origin)}&destination=${enc(destination)}&travelmode=driving`;
 
-  // Naver Maps — uses lng,lat order
   const naver =
-    originCoords && destCoords
-      ? `https://map.naver.com/v5/directions/${originCoords.lng},${originCoords.lat},${enc(origin.split(",")[0])},-/-/${destCoords.lng},${destCoords.lat},${enc(destination.split(",")[0])},-/car`
+    oC && dC
+      ? `https://map.naver.com/v5/directions/${oC.lng},${oC.lat},${enc(origin.split(",")[0])},-/-/${dC.lng},${dC.lat},${enc(destination.split(",")[0])},-/car`
       : `https://map.naver.com/v5/search/${enc(destination.split(",")[0])}`;
 
-  // KakaoMap — link to destination (no public route URL with origin support)
-  const kakao = destCoords
-    ? `https://map.kakao.com/link/to/${enc(destination.split(",")[0])},${destCoords.lat},${destCoords.lng}`
+  const kakao = dC
+    ? `https://map.kakao.com/link/to/${enc(destination.split(",")[0])},${dC.lat},${dC.lng}`
     : `https://map.kakao.com/?q=${enc(destination.split(",")[0])}`;
 
   return { google, naver, kakao };
-}
-
-// ─── Validation ───────────────────────────────────────────────────────────────
-
-export interface TripHelpersValidation {
-  passed: boolean;
-  results: Array<{ label: string; passed: boolean; detail: string }>;
-}
-
-export function validateTripHelpers(): TripHelpersValidation {
-  const results: Array<{ label: string; passed: boolean; detail: string }> = [];
-
-  function check(label: string, condition: boolean, detail: string) {
-    results.push({ label, passed: condition, detail });
-  }
-
-  // getDayType
-  check(
-    "getDayType: flight day returns Vlucht",
-    getDayType({ date: "", dayNumber: 1, title: "", location: "", emoji: "", transport: [{ id: "x", type: "flight", title: "" }] }) === "Vlucht",
-    "",
-  );
-  check(
-    "getDayType: travelTime day returns Reisdag",
-    getDayType({ date: "", dayNumber: 1, title: "", location: "", emoji: "", travelTime: "2u" }) === "Reisdag",
-    "",
-  );
-  check(
-    "getDayType: no transport returns Verblijf",
-    getDayType({ date: "", dayNumber: 1, title: "", location: "", emoji: "" }) === "Verblijf",
-    "",
-  );
-
-  // getVisibleRoutePoints — upcoming
-  const allPoints = getVisibleRoutePoints("upcoming", 0);
-  check("getVisibleRoutePoints: upcoming shows all 6 points", allPoints.length === 6, `got ${allPoints.length}`);
-
-  // getVisibleRoutePoints — during Sokcho (dayIndex 5)
-  const sokcho = getVisibleRoutePoints("active", 5);
-  const seoulFaded = sokcho.find((p) => p.id === "seoul-1");
-  const sokchoCurrent = sokcho.find((p) => p.id === "sokcho");
-  check("getVisibleRoutePoints: active sokcho — seoul-1 is faded", !!seoulFaded?.isFaded, "");
-  check("getVisibleRoutePoints: active sokcho — sokcho is current", !!sokchoCurrent?.isCurrent, "");
-  check("getVisibleRoutePoints: active sokcho — all future points included", sokcho.length === 5, `got ${sokcho.length}`);
-
-  // getVisibleRoutePoints — during Busan (dayIndex 9)
-  const busan = getVisibleRoutePoints("active", 9);
-  const seoulHidden = busan.find((p) => p.id === "seoul-1");
-  check("getVisibleRoutePoints: active busan — seoul-1 hidden", seoulHidden === undefined, "");
-  const andongFaded = busan.find((p) => p.id === "andong");
-  check("getVisibleRoutePoints: active busan — andong is faded", !!andongFaded?.isFaded, "");
-
-  // buildRouteLinks
-  const links = buildRouteLinks("Seoul, Zuid-Korea", "Sokcho, Zuid-Korea");
-  check("buildRouteLinks: google includes travelmode=driving", links.google.includes("travelmode=driving"), links.google);
-  check("buildRouteLinks: naver is defined", links.naver.length > 0, links.naver);
-  check("buildRouteLinks: kakao is defined", links.kakao.length > 0, links.kakao);
-
-  return { passed: results.every((r) => r.passed), results };
 }

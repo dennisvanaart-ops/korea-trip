@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { ROUTE_POINTS, getVisibleRoutePoints } from "@/lib/tripHelpers";
+import { ROUTE_POINTS, lngLatToMapPx, getVisibleRoutePoints } from "@/lib/tripHelpers";
 import type { TripStatus } from "@/lib/tripProgress";
 
 /**
@@ -11,31 +11,21 @@ import type { TripStatus } from "@/lib/tripProgress";
  * Container: aspect-ratio 2:1, object-fit cover.
  * This crops the square image to show y=[128,384] of the original 512px height.
  *
- * Marker positions are pre-computed for this crop:
+ * Marker positions are computed dynamically via lngLatToMapPx().
  *   left%  = pixel_x / 512 * 100
- *   top%   = (pixel_y − 128) / 256 * 100
+ *   top%   = (pixel_y − Y_OFFSET) / Y_RANGE * 100
  *
  * SVG overlay: viewBox="0 0 512 256" matches the cropped pixel space.
  */
 
-// Pixel coordinates on the 512×512 map image (zoom-6, origin = tile(54,24))
-const MAP_PIXEL: Record<string, { x: number; y: number }> = {
-  "seoul-1": { x: 146.9, y: 200.7 },
-  "sokcho":  { x: 220.4, y: 163.8 },
-  "andong":  { x: 226.6, y: 257.7 },
-  "busan":   { x: 242.4, y: 335.7 },
-  "jeonju":  { x: 154.6, y: 299.6 },
-  "seoul-2": { x: 146.9, y: 200.7 },
-};
-
 // Vertical crop constants for aspect-ratio 2:1 container
-const Y_OFFSET = 128; // pixels clipped from top in original image
+const Y_OFFSET = 128; // pixels clipped from top in original 512px image
 const Y_RANGE  = 256; // visible height in original image pixels (512 * 0.5)
 
 function toContainerPct(px: { x: number; y: number }) {
   return {
-    left: px.x / 512 * 100,
-    top:  (px.y - Y_OFFSET) / Y_RANGE * 100,
+    left: (px.x / 512) * 100,
+    top: ((px.y - Y_OFFSET) / Y_RANGE) * 100,
   };
 }
 
@@ -46,14 +36,16 @@ function toSvg(px: { x: number; y: number }) {
 
 interface Props {
   status: TripStatus;
-  currentDayIndex: number;
-  onMarkerTap?: (pointId: string) => void;
+  /** Active day index (follows scroll/wheel; map highlights the matching stop) */
+  activeDayIndex: number;
+  /** Called when user taps the map — use to open fullscreen */
+  onMapClick?: () => void;
 }
 
-export function RouteMapPreview({ status, currentDayIndex, onMarkerTap }: Props) {
+export function RouteMapPreview({ status, activeDayIndex, onMapClick }: Props) {
   const visible = useMemo(
-    () => getVisibleRoutePoints(status, currentDayIndex),
-    [status, currentDayIndex],
+    () => getVisibleRoutePoints(status, activeDayIndex),
+    [status, activeDayIndex],
   );
 
   const visibleById = useMemo(
@@ -61,9 +53,9 @@ export function RouteMapPreview({ status, currentDayIndex, onMarkerTap }: Props)
     [visible],
   );
 
-  // Enrich ROUTE_POINTS with visibility + SVG/container positions
+  // Enrich ROUTE_POINTS with visibility + SVG/container positions (computed dynamically)
   const points = ROUTE_POINTS.map((rp) => {
-    const px = MAP_PIXEL[rp.id] ?? { x: 0, y: 256 };
+    const px = lngLatToMapPx(rp.lat, rp.lng);
     const vis = visibleById.get(rp.id);
     return {
       ...rp,
@@ -94,7 +86,13 @@ export function RouteMapPreview({ status, currentDayIndex, onMarkerTap }: Props)
   return (
     <div
       className="relative w-full overflow-hidden rounded-xl border border-gray-200 shadow-sm"
-      style={{ aspectRatio: "2 / 1" }}
+      style={{
+        aspectRatio: "2 / 1",
+        cursor: onMapClick ? "pointer" : "default",
+      }}
+      onClick={onMapClick}
+      role={onMapClick ? "button" : undefined}
+      aria-label={onMapClick ? "Kaart openen" : undefined}
     >
       {/* ── Real map background ───────────────────────────────────────────── */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -143,20 +141,18 @@ export function RouteMapPreview({ status, currentDayIndex, onMarkerTap }: Props)
         return (
           <div
             key={p.id}
-            className="absolute"
+            className="absolute pointer-events-none"
             style={{
               left: `${p.pct.left}%`,
               top: `${p.pct.top}%`,
               transform: "translate(-50%, -50%)",
-              cursor: onMarkerTap ? "pointer" : "default",
               opacity: p.isFaded ? 0.45 : 1,
             }}
-            onClick={() => onMarkerTap?.(p.id)}
           >
             {/* Pulse ring for current location */}
             {p.isCurrent && (
               <span
-                className="absolute inset-0 rounded-full animate-ping"
+                className="absolute rounded-full animate-ping"
                 style={{
                   width: 22, height: 22,
                   top: -5, left: -5,
@@ -198,6 +194,31 @@ export function RouteMapPreview({ status, currentDayIndex, onMarkerTap }: Props)
           </div>
         );
       })}
+
+      {/* ── Expand hint (bottom-right) ────────────────────────────────────── */}
+      {onMapClick && (
+        <div
+          className="absolute bottom-2 right-2 flex items-center gap-1 pointer-events-none"
+          style={{
+            background: "rgba(0,0,0,0.38)",
+            borderRadius: 6,
+            padding: "2px 6px",
+          }}
+        >
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5"
+              stroke="white"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-[9px] font-semibold text-white leading-none">
+            Kaart
+          </span>
+        </div>
+      )}
     </div>
   );
 }
